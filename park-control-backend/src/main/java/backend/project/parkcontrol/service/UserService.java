@@ -107,5 +107,16 @@ public class UserService {
         return validationCodeService.getValidationCodeByUser(validateCodeDto);
     }
 
+    public UserEntity getUserById(Integer id){
+
+        Optional<UserEntity> optionalUser = userCrud.findById(id);
+
+        if(optionalUser.isEmpty()){
+            throw new BusinessException(HttpStatus.NOT_FOUND, "El usuario no ha sido encontrado");
+        }
+
+        return optionalUser.get();
+    }
+
 
 }
