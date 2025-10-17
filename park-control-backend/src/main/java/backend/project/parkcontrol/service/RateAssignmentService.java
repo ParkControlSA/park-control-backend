@@ -2,6 +2,7 @@ package backend.project.parkcontrol.service;
 
 import backend.project.parkcontrol.dto.request.NewRateAssignmentDto;
 import backend.project.parkcontrol.dto.response.RateAssignmentDto;
+import backend.project.parkcontrol.dto.response.ResponseSuccessfullyDto;
 import backend.project.parkcontrol.exception.BusinessException;
 import backend.project.parkcontrol.repository.crud.RateAssignmentCrud;
 import backend.project.parkcontrol.repository.entities.RateAssignment;
@@ -15,33 +16,36 @@ import java.util.*;
 @RequiredArgsConstructor
 @Service
 public class RateAssignmentService {
-    private final RateAssignmentCrud rateassignmentCrud;
+
+    private final RateAssignmentCrud rateAssignmentCrud;
     private final BranchService branchService;
-    // FK helper: find by id_branch
-    public java.util.List<RateAssignment> getById_branch(Integer id){
-        java.util.List<RateAssignment> list = rateassignmentCrud.findById_branch(id);
-        if(list.isEmpty()) throw new BusinessException(org.springframework.http.HttpStatus.NOT_FOUND, "Not found");
+
+    // ==============================
+    // GETTERS
+    // ==============================
+
+    public List<RateAssignment> getById_branch(Integer id) {
+        List<RateAssignment> list = rateAssignmentCrud.findById_branch(id);
+        if (list.isEmpty()) throw new BusinessException(HttpStatus.NOT_FOUND, "No se encontraron registros para la sucursal");
         return list;
     }
 
-    public java.util.List<RateAssignment> getAllRateAssignmentList(){
-        java.util.List<RateAssignment> list = rateassignmentCrud.findAll();
-        if(list.isEmpty()) throw new BusinessException(HttpStatus.NOT_FOUND, "No records");
+    public List<RateAssignment> getAllRateAssignmentList() {
+        List<RateAssignment> list = rateAssignmentCrud.findAll();
+        if (list.isEmpty()) throw new BusinessException(HttpStatus.NOT_FOUND, "No hay registros");
         return list;
     }
 
-    public RateAssignment getRateAssignmentById(Integer id){
-        Optional<RateAssignment> optional = rateassignmentCrud.findById(id);
-        if(optional.isEmpty()) throw new BusinessException(HttpStatus.NOT_FOUND, "RateAssignment not found");
-        return optional.get();
+    public RateAssignment getRateAssignmentById(Integer id) {
+        return rateAssignmentCrud.findById(id)
+                .orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, "Asignación de tarifa no encontrada"));
     }
 
-    public void deleteRateAssignment(Integer id){
-        RateAssignment entity = getRateAssignmentById(id);
-        rateassignmentCrud.delete(entity);
-    }
+    // ==============================
+    // CRUD Methods
+    // ==============================
 
-    public void createRateAssignment(NewRateAssignmentDto dto){
+    public ResponseSuccessfullyDto createRateAssignment(NewRateAssignmentDto dto) {
         RateAssignment e = new RateAssignment();
         e.setBranch(branchService.getBranchById(dto.getId_branch()));
         e.setHourly_rate(dto.getHourly_rate());
@@ -49,10 +53,15 @@ public class RateAssignmentService {
         e.setInsert_date(dto.getInsert_date());
         e.setUpdate_date(dto.getUpdate_date());
 
-        rateassignmentCrud.save(e);
+        rateAssignmentCrud.save(e);
+
+        return ResponseSuccessfullyDto.builder()
+                .code(HttpStatus.CREATED)
+                .message("Registro creado con Éxito")
+                .build();
     }
 
-    public void updateRateAssignment(RateAssignmentDto dto){
+    public ResponseSuccessfullyDto updateRateAssignment(RateAssignmentDto dto) {
         RateAssignment existing = getRateAssignmentById(dto.getId());
         existing.setBranch(branchService.getBranchById(dto.getId_branch()));
         existing.setHourly_rate(dto.getHourly_rate());
@@ -60,6 +69,48 @@ public class RateAssignmentService {
         existing.setInsert_date(dto.getInsert_date());
         existing.setUpdate_date(dto.getUpdate_date());
 
-        rateassignmentCrud.save(existing);
+        rateAssignmentCrud.save(existing);
+
+        return ResponseSuccessfullyDto.builder()
+                .code(HttpStatus.ACCEPTED)
+                .message("Registro actualizado con Éxito")
+                .build();
+    }
+
+    public ResponseSuccessfullyDto deleteRateAssignment(Integer id) {
+        RateAssignment entity = getRateAssignmentById(id);
+        rateAssignmentCrud.delete(entity);
+        return ResponseSuccessfullyDto.builder()
+                .code(HttpStatus.ACCEPTED)
+                .message("Registro eliminado con Éxito")
+                .build();
+    }
+
+    // ==============================
+    // ResponseSuccessfullyDto Getters
+    // ==============================
+
+    public ResponseSuccessfullyDto getRateAssignment(Integer id) {
+        return ResponseSuccessfullyDto.builder()
+                .code(HttpStatus.FOUND)
+                .message("Registro encontrado con Éxito")
+                .body(getRateAssignmentById(id))
+                .build();
+    }
+
+    public ResponseSuccessfullyDto getAllRateAssignmentListResponse() {
+        return ResponseSuccessfullyDto.builder()
+                .code(HttpStatus.FOUND)
+                .message("Registros encontrados con Éxito")
+                .body(getAllRateAssignmentList())
+                .build();
+    }
+
+    public ResponseSuccessfullyDto getById_branchResponse(Integer id) {
+        return ResponseSuccessfullyDto.builder()
+                .code(HttpStatus.FOUND)
+                .message("Registros encontrados con Éxito")
+                .body(getById_branch(id))
+                .build();
     }
 }

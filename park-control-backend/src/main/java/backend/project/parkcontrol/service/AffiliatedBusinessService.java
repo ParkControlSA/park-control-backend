@@ -2,6 +2,7 @@ package backend.project.parkcontrol.service;
 
 import backend.project.parkcontrol.dto.request.NewAffiliatedBusinessDto;
 import backend.project.parkcontrol.dto.response.AffiliatedBusinessDto;
+import backend.project.parkcontrol.dto.response.ResponseSuccessfullyDto;
 import backend.project.parkcontrol.exception.BusinessException;
 import backend.project.parkcontrol.repository.crud.AffiliatedBusinessCrud;
 import backend.project.parkcontrol.repository.crud.UserCrud;
@@ -10,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
 import java.util.*;
 
 @Slf4j
@@ -19,45 +21,98 @@ public class AffiliatedBusinessService {
     private final AffiliatedBusinessCrud affiliatedbusinessCrud;
     private final UserCrud userCrud;
 
+    // ==============================
+    // GETTERS
+    // ==============================
+
     // FK helper: find by id_user
-    public List<AffiliatedBusiness> getById_user(Integer id){
+    public List<AffiliatedBusiness> getById_user(Integer id) {
         List<AffiliatedBusiness> list = affiliatedbusinessCrud.findById_user(id);
-        if(list.isEmpty()) throw new backend.project.parkcontrol.exception.BusinessException(org.springframework.http.HttpStatus.NOT_FOUND, "Not found");
+        if (list.isEmpty()) throw new BusinessException(HttpStatus.NOT_FOUND, "Not found");
         return list;
     }
 
-    public List<AffiliatedBusiness> getAllAffiliatedBusinessList(){
+    public List<AffiliatedBusiness> getAllAffiliatedBusinessList() {
         List<AffiliatedBusiness> list = affiliatedbusinessCrud.findAll();
-        if(list.isEmpty()) throw new BusinessException(HttpStatus.NOT_FOUND, "No records");
+        if (list.isEmpty()) throw new BusinessException(HttpStatus.NOT_FOUND, "No records");
         return list;
     }
 
-    public AffiliatedBusiness getAffiliatedBusinessById(Integer id){
+    public AffiliatedBusiness getAffiliatedBusinessById(Integer id) {
         Optional<AffiliatedBusiness> optional = affiliatedbusinessCrud.findById(id);
-        if(optional.isEmpty()) throw new BusinessException(HttpStatus.NOT_FOUND, "AffiliatedBusiness not found");
+        if (optional.isEmpty())
+            throw new BusinessException(HttpStatus.NOT_FOUND, "AffiliatedBusiness not found");
         return optional.get();
     }
 
-    public void deleteAffiliatedBusiness(Integer id){
+    // ==============================
+    // CRUD Methods with ResponseSuccessfullyDto
+    // ==============================
+
+    public ResponseSuccessfullyDto deleteAffiliatedBusiness(Integer id) {
         AffiliatedBusiness entity = getAffiliatedBusinessById(id);
         affiliatedbusinessCrud.delete(entity);
+        return ResponseSuccessfullyDto.builder()
+                .code(HttpStatus.ACCEPTED)
+                .message("Registro eliminado con Éxito")
+                .build();
     }
 
-    public void createAffiliatedBusiness(NewAffiliatedBusinessDto dto){
+    public ResponseSuccessfullyDto createAffiliatedBusiness(NewAffiliatedBusinessDto dto) {
         AffiliatedBusiness e = new AffiliatedBusiness();
         e.setBusiness_name(dto.getBusiness_name());
         e.setGranted_hours(dto.getGranted_hours());
-        e.setUser(userCrud.findById(dto.getId_user()).get());
+        e.setUser(userCrud.findById(dto.getId_user()).orElseThrow(
+                () -> new BusinessException(HttpStatus.NOT_FOUND, "User not found")));
 
         affiliatedbusinessCrud.save(e);
+
+        return ResponseSuccessfullyDto.builder()
+                .code(HttpStatus.CREATED)
+                .message("Registro creado con Éxito")
+                .build();
     }
 
-    public void updateAffiliatedBusiness(AffiliatedBusinessDto dto){
+    public ResponseSuccessfullyDto updateAffiliatedBusiness(AffiliatedBusinessDto dto) {
         AffiliatedBusiness existing = getAffiliatedBusinessById(dto.getId());
         existing.setBusiness_name(dto.getBusiness_name());
         existing.setGranted_hours(dto.getGranted_hours());
-        existing.setUser(userCrud.findById(dto.getId_user()).get());
+        existing.setUser(userCrud.findById(dto.getId_user()).orElseThrow(
+                () -> new BusinessException(HttpStatus.NOT_FOUND, "User not found")));
 
         affiliatedbusinessCrud.save(existing);
+
+        return ResponseSuccessfullyDto.builder()
+                .code(HttpStatus.ACCEPTED)
+                .message("Registro actualizado con Éxito")
+                .build();
+    }
+
+    // ==============================
+    // ResponseSuccessfullyDto Getters
+    // ==============================
+
+    public ResponseSuccessfullyDto getAffiliatedBusiness(Integer id) {
+        return ResponseSuccessfullyDto.builder()
+                .code(HttpStatus.FOUND)
+                .message("Registro encontrado con Éxito")
+                .body(getAffiliatedBusinessById(id))
+                .build();
+    }
+
+    public ResponseSuccessfullyDto getAllAffiliatedBusinessListResponse() {
+        return ResponseSuccessfullyDto.builder()
+                .code(HttpStatus.FOUND)
+                .message("Registros encontrados con Éxito")
+                .body(getAllAffiliatedBusinessList())
+                .build();
+    }
+
+    public ResponseSuccessfullyDto getById_userResponse(Integer id) {
+        return ResponseSuccessfullyDto.builder()
+                .code(HttpStatus.FOUND)
+                .message("Registros encontrados con Éxito")
+                .body(getById_user(id))
+                .build();
     }
 }

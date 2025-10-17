@@ -2,6 +2,7 @@ package backend.project.parkcontrol.service;
 
 import backend.project.parkcontrol.dto.request.NewTicketDto;
 import backend.project.parkcontrol.dto.response.TicketDto;
+import backend.project.parkcontrol.dto.response.ResponseSuccessfullyDto;
 import backend.project.parkcontrol.exception.BusinessException;
 import backend.project.parkcontrol.repository.crud.TicketCrud;
 import backend.project.parkcontrol.repository.entities.Ticket;
@@ -18,31 +19,54 @@ public class TicketService {
     private final TicketCrud ticketCrud;
     private final BranchService branchService;
 
-    // FK helper: find by id_branch
+    // ==============================
+    // GETTERS
+    // ==============================
     public List<Ticket> getById_branch(Integer id){
         List<Ticket> list = ticketCrud.findById_branch(id);
-        if(list.isEmpty()) throw new BusinessException(org.springframework.http.HttpStatus.NOT_FOUND, "Not found");
+        if(list.isEmpty()) throw new BusinessException(HttpStatus.NOT_FOUND, "No se encontraron registros para la sucursal");
         return list;
+    }
+
+    public ResponseSuccessfullyDto getById_branchResponse(Integer id){
+        return ResponseSuccessfullyDto.builder()
+                .code(HttpStatus.FOUND)
+                .message("Registros encontrados con éxito")
+                .body(getById_branch(id))
+                .build();
     }
 
     public List<Ticket> getAllTicketList(){
         List<Ticket> list = ticketCrud.findAll();
-        if(list.isEmpty()) throw new BusinessException(HttpStatus.NOT_FOUND, "No records");
+        if(list.isEmpty()) throw new BusinessException(HttpStatus.NOT_FOUND, "No hay registros");
         return list;
     }
 
+    public ResponseSuccessfullyDto getAllTicketListResponse(){
+        return ResponseSuccessfullyDto.builder()
+                .code(HttpStatus.FOUND)
+                .message("Registros encontrados con éxito")
+                .body(getAllTicketList())
+                .build();
+    }
+
     public Ticket getTicketById(Integer id){
-        Optional<Ticket> optional = ticketCrud.findById(id);
-        if(optional.isEmpty()) throw new BusinessException(HttpStatus.NOT_FOUND, "Ticket not found");
-        return optional.get();
+        return ticketCrud.findById(id)
+                .orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, "Registro no encontrado"));
     }
 
-    public void deleteTicket(Integer id){
-        Ticket entity = getTicketById(id);
-        ticketCrud.delete(entity);
+    public ResponseSuccessfullyDto getTicketByIdResponse(Integer id){
+        return ResponseSuccessfullyDto.builder()
+                .code(HttpStatus.FOUND)
+                .message("Registro encontrado con éxito")
+                .body(getTicketById(id))
+                .build();
     }
 
-    public void createTicket(NewTicketDto dto){
+    // ==============================
+    // CRUD
+    // ==============================
+    public ResponseSuccessfullyDto createTicket(NewTicketDto dto){
         Ticket e = new Ticket();
         e.setBranch(branchService.getBranchById(dto.getId_branch()));
         e.setPlate(dto.getPlate());
@@ -54,9 +78,14 @@ public class TicketService {
         e.setStatus(dto.getStatus());
 
         ticketCrud.save(e);
+
+        return ResponseSuccessfullyDto.builder()
+                .code(HttpStatus.CREATED)
+                .message("Registro creado con éxito")
+                .build();
     }
 
-    public void updateTicket(TicketDto dto){
+    public ResponseSuccessfullyDto updateTicket(TicketDto dto){
         Ticket existing = getTicketById(dto.getId());
         existing.setBranch(branchService.getBranchById(dto.getId_branch()));
         existing.setPlate(dto.getPlate());
@@ -68,5 +97,20 @@ public class TicketService {
         existing.setStatus(dto.getStatus());
 
         ticketCrud.save(existing);
+
+        return ResponseSuccessfullyDto.builder()
+                .code(HttpStatus.ACCEPTED)
+                .message("Registro actualizado con éxito")
+                .build();
+    }
+
+    public ResponseSuccessfullyDto deleteTicket(Integer id){
+        Ticket entity = getTicketById(id);
+        ticketCrud.delete(entity);
+
+        return ResponseSuccessfullyDto.builder()
+                .code(HttpStatus.ACCEPTED)
+                .message("Registro eliminado con éxito")
+                .build();
     }
 }
