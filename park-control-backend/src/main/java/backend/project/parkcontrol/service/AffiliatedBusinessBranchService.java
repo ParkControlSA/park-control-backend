@@ -2,6 +2,7 @@ package backend.project.parkcontrol.service;
 
 import backend.project.parkcontrol.dto.request.NewAffiliatedBusinessBranchDto;
 import backend.project.parkcontrol.dto.response.AffiliatedBusinessBranchDto;
+import backend.project.parkcontrol.dto.response.ResponseSuccessfullyDto;
 import backend.project.parkcontrol.exception.BusinessException;
 import backend.project.parkcontrol.repository.crud.AffiliatedBusinessBranchCrud;
 import backend.project.parkcontrol.repository.entities.AffiliatedBusinessBranch;
@@ -44,24 +45,43 @@ public class AffiliatedBusinessBranchService {
         return optional.get();
     }
 
-    public void deleteAffiliatedBusinessBranch(Integer id){
+    public ResponseSuccessfullyDto deleteAffiliatedBusinessBranch(Integer id){
         AffiliatedBusinessBranch entity = getAffiliatedBusinessBranchById(id);
         affiliatedbusinessbranchCrud.delete(entity);
+        return ResponseSuccessfullyDto.builder().code(HttpStatus.ACCEPTED).message("Registro eliminado con Exito").build();
     }
 
-    public void createAffiliatedBusinessBranch(NewAffiliatedBusinessBranchDto dto){
+    public ResponseSuccessfullyDto createAffiliatedBusinessBranch(NewAffiliatedBusinessBranchDto dto){
         AffiliatedBusinessBranch e = new AffiliatedBusinessBranch();
         e.setAffiliatedBusiness(affiliatedBusinessService.getAffiliatedBusinessById(dto.getId_affiliated_business()));
         e.setBranch(branchService.getBranchById(dto.getId_branch()));
-
         affiliatedbusinessbranchCrud.save(e);
+        return ResponseSuccessfullyDto.builder().code(HttpStatus.CREATED).message("Registro creado con Exito").build();
     }
 
-    public void updateAffiliatedBusinessBranch(AffiliatedBusinessBranchDto dto){
+    public ResponseSuccessfullyDto updateAffiliatedBusinessBranch(AffiliatedBusinessBranchDto dto){
         AffiliatedBusinessBranch existing = getAffiliatedBusinessBranchById(dto.getId());
         existing.setAffiliatedBusiness(affiliatedBusinessService.getAffiliatedBusinessById(dto.getId_affiliated_business()));
         existing.setBranch(branchService.getBranchById(dto.getId_branch()));
 
         affiliatedbusinessbranchCrud.save(existing);
+        return ResponseSuccessfullyDto.builder().code(HttpStatus.ACCEPTED).message("Registro actualizado con Exito").build();
     }
+
+    public ResponseSuccessfullyDto getAffiliatedBusinessBranch(Integer id){
+        return ResponseSuccessfullyDto.builder().code(HttpStatus.FOUND).message("Registro encontrado con Exito").body(getAffiliatedBusinessBranchById(id)).build();
+    }
+
+    public ResponseSuccessfullyDto getAllAffiliatedBusinessBranchListResponse(){
+        return ResponseSuccessfullyDto.builder().code(HttpStatus.FOUND).message("Registro encontrado con Exito").body(getAllAffiliatedBusinessBranchList()).build();
+    }
+
+    public ResponseSuccessfullyDto getById_branchResponse(Integer id){
+        return ResponseSuccessfullyDto.builder().code(HttpStatus.FOUND).message("Registro encontrado con Exito").body(getById_branch(id)).build();
+    }
+
+    public ResponseSuccessfullyDto getById_affiliated_businessResponse(Integer id){
+        return ResponseSuccessfullyDto.builder().code(HttpStatus.FOUND).message("Registro encontrado con Exito").body(getById_affiliated_business(id)).build();
+    }
+
 }
