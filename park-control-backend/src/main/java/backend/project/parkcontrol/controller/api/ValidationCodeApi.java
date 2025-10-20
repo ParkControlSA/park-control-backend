@@ -12,6 +12,6 @@ public interface ValidationCodeApi {
     @PostMapping
     ResponseEntity<ResponseSuccessfullyDto> createValidationCode(@RequestBody ValidationCode dto);
 
-    @GetMapping("/user")
+    @PostMapping("/user")
     ResponseEntity<ResponseSuccessfullyDto> getValidationCodeByUser(@RequestBody ValidateCodeDto dto);
 }
