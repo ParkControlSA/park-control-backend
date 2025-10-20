@@ -9,17 +9,20 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/affiliatedBusinessBranch")
 public interface AffiliatedBusinessBranchApi {
 
-    // CRUD
+
     @PostMapping
-    ResponseEntity<ResponseSuccessfullyDto> createAffiliatedBusinessBranch(@RequestBody NewAffiliatedBusinessBranchDto dto);
+    ResponseEntity<ResponseSuccessfullyDto> createAffiliatedBusinessBranch(@RequestBody NewAffiliatedBusinessBranchDto dto,
+                                                                           @RequestHeader(name = "authorization") Integer userId);
 
     @PutMapping
-    ResponseEntity<ResponseSuccessfullyDto> updateAffiliatedBusinessBranch(@RequestBody AffiliatedBusinessBranchDto dto);
+    ResponseEntity<ResponseSuccessfullyDto> updateAffiliatedBusinessBranch(@RequestBody AffiliatedBusinessBranchDto dto,
+                                                                           @RequestHeader(name = "authorization") Integer userId);
 
     @DeleteMapping("/{id}")
-    ResponseEntity<ResponseSuccessfullyDto> deleteAffiliatedBusinessBranch(@PathVariable Integer id);
+    ResponseEntity<ResponseSuccessfullyDto> deleteAffiliatedBusinessBranch(@PathVariable Integer id,
+                                                                           @RequestHeader(name = "authorization") Integer userId);
 
-    // GETTERS
+
     @GetMapping("/all")
     ResponseEntity<ResponseSuccessfullyDto> getAllAffiliatedBusinessBranchs();
 
