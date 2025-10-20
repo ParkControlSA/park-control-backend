@@ -3,6 +3,7 @@ package backend.project.parkcontrol.controller;
 import backend.project.parkcontrol.controller.api.UserApi;
 import backend.project.parkcontrol.dto.request.LoginDto;
 import backend.project.parkcontrol.dto.request.NewUserDto;
+import backend.project.parkcontrol.dto.request.UpdateAuthStatusDto;
 import backend.project.parkcontrol.dto.request.ValidateCodeDto;
 import backend.project.parkcontrol.dto.response.ResponseSuccessfullyDto;
 import backend.project.parkcontrol.service.UserService;
@@ -38,5 +39,12 @@ public class UserController implements UserApi {
         log.info("GET user/code");
         ResponseSuccessfullyDto responseSuccessfullyDto = userService.validateCode(validateCodeDto);
         return new ResponseEntity<>(responseSuccessfullyDto, responseSuccessfullyDto.getCode());
+    }
+
+    @Override
+    public ResponseEntity<ResponseSuccessfullyDto> updateAuthStatus(UpdateAuthStatusDto updateAuthStatusDto, Integer userId) {
+        log.info("PUT user/authentication/status");
+        ResponseSuccessfullyDto responseSuccessfullyDto = userService.updateAuthenticationStatus(userId,updateAuthStatusDto.getStatus());
+        return new ResponseEntity<ResponseSuccessfullyDto>(responseSuccessfullyDto, responseSuccessfullyDto.getCode());
     }
 }

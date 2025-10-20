@@ -2,12 +2,11 @@ package backend.project.parkcontrol.controller.api;
 
 import backend.project.parkcontrol.dto.request.LoginDto;
 import backend.project.parkcontrol.dto.request.NewUserDto;
+import backend.project.parkcontrol.dto.request.UpdateAuthStatusDto;
 import backend.project.parkcontrol.dto.request.ValidateCodeDto;
 import backend.project.parkcontrol.dto.response.ResponseSuccessfullyDto;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/user")
 public interface UserApi {
@@ -21,6 +20,10 @@ public interface UserApi {
 
     @PostMapping("/code")
     ResponseEntity<ResponseSuccessfullyDto> validateToken(@RequestBody ValidateCodeDto validateCodeDto);
+
+
+    @PutMapping("/authentication/status")
+    ResponseEntity<ResponseSuccessfullyDto> updateAuthStatus(@RequestBody UpdateAuthStatusDto updateAuthStatusDto, @RequestHeader(value = "user") Integer userId);
 
 
 }

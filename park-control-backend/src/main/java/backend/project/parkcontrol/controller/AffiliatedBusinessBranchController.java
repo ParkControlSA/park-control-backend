@@ -5,6 +5,7 @@ import backend.project.parkcontrol.dto.request.NewAffiliatedBusinessBranchDto;
 import backend.project.parkcontrol.dto.response.AffiliatedBusinessBranchDto;
 import backend.project.parkcontrol.dto.response.ResponseSuccessfullyDto;
 import backend.project.parkcontrol.service.AffiliatedBusinessBranchService;
+import backend.project.parkcontrol.service.TokenService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -17,39 +18,33 @@ public class AffiliatedBusinessBranchController implements AffiliatedBusinessBra
 
     private final AffiliatedBusinessBranchService affiliatedBusinessBranchService;
 
-    // ======================
-    // CREATE
-    // ======================
+    private final TokenService tokenService;
+
     @Override
-    public ResponseEntity<ResponseSuccessfullyDto> createAffiliatedBusinessBranch(NewAffiliatedBusinessBranchDto dto) {
+    public ResponseEntity<ResponseSuccessfullyDto> createAffiliatedBusinessBranch(NewAffiliatedBusinessBranchDto dto, Integer userId) {
         log.info("POST /affiliatedBusinessBranch");
+        tokenService.validateAuthorizationHeader(userId);
         ResponseSuccessfullyDto resp = affiliatedBusinessBranchService.createAffiliatedBusinessBranch(dto);
         return new ResponseEntity<>(resp, resp.getCode());
     }
 
-    // ======================
-    // UPDATE
-    // ======================
     @Override
-    public ResponseEntity<ResponseSuccessfullyDto> updateAffiliatedBusinessBranch(AffiliatedBusinessBranchDto dto) {
+    public ResponseEntity<ResponseSuccessfullyDto> updateAffiliatedBusinessBranch(AffiliatedBusinessBranchDto dto, Integer userId) {
         log.info("PUT /affiliatedBusinessBranch");
+        tokenService.validateAuthorizationHeader(userId);
         ResponseSuccessfullyDto resp = affiliatedBusinessBranchService.updateAffiliatedBusinessBranch(dto);
         return new ResponseEntity<>(resp, resp.getCode());
     }
 
-    // ======================
-    // DELETE
-    // ======================
     @Override
-    public ResponseEntity<ResponseSuccessfullyDto> deleteAffiliatedBusinessBranch(Integer id) {
+    public ResponseEntity<ResponseSuccessfullyDto> deleteAffiliatedBusinessBranch(Integer id, Integer userId) {
         log.info("DELETE /affiliatedBusinessBranch/{}", id);
+        tokenService.validateAuthorizationHeader(userId);
         ResponseSuccessfullyDto resp = affiliatedBusinessBranchService.deleteAffiliatedBusinessBranch(id);
         return new ResponseEntity<>(resp, resp.getCode());
     }
 
-    // ======================
-    // GETTERS
-    // ======================
+
     @Override
     public ResponseEntity<ResponseSuccessfullyDto> getAllAffiliatedBusinessBranchs() {
         log.info("GET /affiliatedBusinessBranch/all");
