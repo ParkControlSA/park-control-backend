@@ -25,7 +25,6 @@ public class BranchService {
 
     public List<Branch> getAllBranchList() {
         List<Branch> list = branchCrud.findAll();
-        if (list.isEmpty()) throw new BusinessException(HttpStatus.NOT_FOUND, "No records");
         return list;
     }
 
