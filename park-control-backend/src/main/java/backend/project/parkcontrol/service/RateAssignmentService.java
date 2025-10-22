@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Slf4j
@@ -19,7 +21,8 @@ public class RateAssignmentService {
 
     private final RateAssignmentCrud rateAssignmentCrud;
     private final BranchService branchService;
-
+    private final ValidationService validationService;
+    private static final Boolean ACTIVE_DEFAULT = true;
     // ==============================
     // GETTERS
     // ==============================
@@ -51,9 +54,9 @@ public class RateAssignmentService {
         RateAssignment e = new RateAssignment();
         e.setBranch(branchService.getBranchById(dto.getId_branch()));
         e.setHourly_rate(dto.getHourly_rate());
-        e.setIs_active(dto.getIs_active());
-        e.setInsert_date(dto.getInsert_date());
-        e.setUpdate_date(dto.getUpdate_date());
+        e.setIs_active(ACTIVE_DEFAULT);
+        e.setInsert_date(LocalDateTime.now());
+        e.setUpdate_date(LocalDateTime.now());
 
         rateAssignmentCrud.save(e);
 
@@ -68,6 +71,8 @@ public class RateAssignmentService {
         existing.setBranch(branchService.getBranchById(dto.getId_branch()));
         existing.setHourly_rate(dto.getHourly_rate());
         existing.setIs_active(dto.getIs_active());
+        validationService.validateCurrentOrFutureDateTime(dto.getInsert_date(),"Insert DateTime");
+        validationService.validateCurrentOrFutureDateTime(dto.getInsert_date(),"Update DateTime");
         existing.setInsert_date(dto.getInsert_date());
         existing.setUpdate_date(dto.getUpdate_date());
 

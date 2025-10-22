@@ -18,7 +18,7 @@ import java.util.*;
 @Service
 public class BranchService {
     private final BranchCrud branchCrud;
-
+    private final ValidationService validationService;
     // ==============================
     // GETTERS
     // ==============================
@@ -52,6 +52,8 @@ public class BranchService {
         e.setAddress(dto.getAddress());
         e.setOpening_time(dto.getOpening_time());
         e.setClosing_time(dto.getClosing_time());
+        validationService.validatePositiveNumber(dto.getCapacity_2r(), "Capacidad 2r");
+        validationService.validatePositiveNumber(dto.getCapacity_4r(), "Capacidad 4r");
         e.setCapacity_2r(dto.getCapacity_2r());
         e.setCapacity_4r(dto.getCapacity_4r());
         branchCrud.save(e);
@@ -68,6 +70,8 @@ public class BranchService {
         existing.setAddress(dto.getAddress());
         existing.setOpening_time(dto.getOpening_time());
         existing.setClosing_time(dto.getClosing_time());
+        validationService.validatePositiveNumber(dto.getCapacity_2r(), "Capacidad 2r");
+        validationService.validatePositiveNumber(dto.getCapacity_4r(), "Capacidad 4r");
         existing.setCapacity_2r(dto.getCapacity_2r());
         existing.setCapacity_4r(dto.getCapacity_4r());
         branchCrud.save(existing);
