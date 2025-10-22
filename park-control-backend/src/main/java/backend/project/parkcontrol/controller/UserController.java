@@ -1,10 +1,7 @@
 package backend.project.parkcontrol.controller;
 
 import backend.project.parkcontrol.controller.api.UserApi;
-import backend.project.parkcontrol.dto.request.LoginDto;
-import backend.project.parkcontrol.dto.request.NewUserDto;
-import backend.project.parkcontrol.dto.request.UpdateAuthStatusDto;
-import backend.project.parkcontrol.dto.request.ValidateCodeDto;
+import backend.project.parkcontrol.dto.request.*;
 import backend.project.parkcontrol.dto.response.ResponseSuccessfullyDto;
 import backend.project.parkcontrol.dto.response.UserDto;
 import backend.project.parkcontrol.service.UserService;
@@ -61,6 +58,13 @@ public class UserController implements UserApi {
         log.info("GET /user/role/{}", idRol);
         ResponseSuccessfullyDto response = userService.getUsersByRolIdResponse(idRol);
         return new ResponseEntity<>(response, response.getCode());
+    }
+
+    @Override
+    public ResponseEntity<ResponseSuccessfullyDto> recoveryPassword(RecoveryPasswordDto recoveryPasswordDto, Integer userId) {
+        log.info("POST user/recovery_password");
+        ResponseSuccessfullyDto responseSuccessfullyDto = userService.recoveryPassword(recoveryPasswordDto,userId);
+        return new ResponseEntity<>(responseSuccessfullyDto, responseSuccessfullyDto.getCode());
     }
 
     @Override
