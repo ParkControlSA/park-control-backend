@@ -19,14 +19,14 @@ public class AffiliatedBusinessBranchService {
     private final AffiliatedBusinessBranchCrud affiliatedbusinessbranchCrud;
     private final AffiliatedBusinessService affiliatedBusinessService;
     private final BranchService branchService;
-    // FK helper: find by id_affiliated_business
+
     public List<AffiliatedBusinessBranch> getById_affiliated_business(Integer id){
         List<AffiliatedBusinessBranch> list = affiliatedbusinessbranchCrud.findById_affiliated_business(id);
         if(list.isEmpty()) throw new backend.project.parkcontrol.exception.BusinessException(org.springframework.http.HttpStatus.NOT_FOUND, "Not found");
         return list;
     }
 
-    // FK helper: find by id_branch
+
     public List<AffiliatedBusinessBranch> getById_branch(Integer id){
         List<AffiliatedBusinessBranch> list = affiliatedbusinessbranchCrud.findById_branch(id);
         if(list.isEmpty()) throw new backend.project.parkcontrol.exception.BusinessException(org.springframework.http.HttpStatus.NOT_FOUND, "Not found");

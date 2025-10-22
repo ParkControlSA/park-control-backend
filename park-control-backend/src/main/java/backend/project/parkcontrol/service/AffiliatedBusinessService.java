@@ -34,7 +34,6 @@ public class AffiliatedBusinessService {
 
     public List<AffiliatedBusiness> getAllAffiliatedBusinessList() {
         List<AffiliatedBusiness> list = affiliatedbusinessCrud.findAll();
-        if (list.isEmpty()) throw new BusinessException(HttpStatus.NOT_FOUND, "No records");
         return list;
     }
 
