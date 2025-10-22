@@ -61,6 +61,13 @@ public class RateAssignmentController implements RateAssignmentApi {
     }
 
     @Override
+    public ResponseEntity<ResponseSuccessfullyDto> getRateAssignamentById_branchIsActive(Integer id) {
+        log.info("GET /rateAssignment/branch/active/{}", id);
+        ResponseSuccessfullyDto resp = service.getRateAssignamentById_branchIsActiveResponse(id);
+        return new ResponseEntity<>(resp, resp.getCode());
+    }
+
+    @Override
     public ResponseEntity<ResponseSuccessfullyDto> getByBranchId(Integer id) {
         log.info("GET /rateAssignment/branch/{}", id);
         ResponseSuccessfullyDto resp = service.getById_branchResponse(id);

@@ -28,4 +28,7 @@ public interface RateAssignmentApi {
 
     @GetMapping("/branch/{id}")
     ResponseEntity<ResponseSuccessfullyDto> getByBranchId(@PathVariable Integer id);
+
+    @GetMapping("/branch/active/{id}")
+    ResponseEntity<ResponseSuccessfullyDto> getRateAssignamentById_branchIsActive(@PathVariable Integer id);
 }

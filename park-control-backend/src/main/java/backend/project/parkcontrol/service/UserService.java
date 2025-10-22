@@ -5,6 +5,7 @@ import backend.project.parkcontrol.dto.request.LoginDto;
 import backend.project.parkcontrol.dto.request.NewUserDto;
 import backend.project.parkcontrol.dto.request.ValidateCodeDto;
 import backend.project.parkcontrol.dto.response.ResponseSuccessfullyDto;
+import backend.project.parkcontrol.dto.response.UserDto;
 import backend.project.parkcontrol.dto.response.UserInfoDto;
 import backend.project.parkcontrol.exception.BusinessException;
 import backend.project.parkcontrol.repository.crud.UserCrud;
@@ -18,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -62,6 +64,78 @@ public class UserService {
         }
     }
 
+    public ResponseSuccessfullyDto updateUser(UserDto userDto) {
+        UserEntity existingUser = getUserById(userDto.getId());
+
+        // Actualizar campos
+        existingUser.setName(userDto.getNombre());
+        existingUser.setUsername(userDto.getUsername());
+        existingUser.setPassword(userDto.getPassword());
+        existingUser.setEmail(userDto.getEmail());
+        existingUser.setPhone(userDto.getTelefono());
+        existingUser.setRol(rolService.getRoleById(userDto.getRol()));
+
+        userCrud.save(existingUser);
+
+        return ResponseSuccessfullyDto.builder()
+                .code(HttpStatus.ACCEPTED)
+                .message("Usuario actualizado correctamente")
+                .build();
+    }
+
+    // ==========================================
+    // DELETE
+    // ==========================================
+    public ResponseSuccessfullyDto deleteUser(Integer id) {
+        UserEntity user = getUserById(id);
+        userCrud.delete(user);
+
+        return ResponseSuccessfullyDto.builder()
+                .code(HttpStatus.ACCEPTED)
+                .message("Usuario eliminado correctamente")
+                .build();
+    }
+
+    // ==========================================
+    // GETTERS
+    // ==========================================
+    public UserEntity getUserById(Integer id) {
+        return userCrud.findById(id).get();
+    }
+
+    public ResponseSuccessfullyDto getUserByIdResponse(Integer id) {
+        return ResponseSuccessfullyDto.builder()
+                .code(HttpStatus.FOUND)
+                .message("Usuario encontrado con éxito")
+                .body(getUserById(id))
+                .build();
+    }
+
+    public List<UserEntity> getAllUsersList() {
+        return userCrud.findAll();
+    }
+
+    public ResponseSuccessfullyDto getAllUsersListResponse() {
+        return ResponseSuccessfullyDto.builder()
+                .code(HttpStatus.FOUND)
+                .message("Usuarios encontrados con éxito")
+                .body(getAllUsersList())
+                .build();
+    }
+
+    public List<UserEntity> getUsersByRolId(Integer idRol) {
+        return  userCrud.findById_role(idRol);
+    }
+
+    public ResponseSuccessfullyDto getUsersByRolIdResponse(Integer idRol) {
+        return ResponseSuccessfullyDto.builder()
+                .code(HttpStatus.FOUND)
+                .message("Usuarios encontrados con éxito por rol")
+                .body(getUsersByRolId(idRol))
+                .build();
+    }
+
+
     public ResponseSuccessfullyDto login(LoginDto loginDto){
         String message = "Inicio de sesión exitoso";
         Optional<UserEntity> optionalUser = userCrud.getUserByUsername(loginDto.getUsername());
@@ -105,17 +179,6 @@ public class UserService {
 
     public ResponseSuccessfullyDto validateCode(ValidateCodeDto validateCodeDto){
         return validationCodeService.getValidationCodeByUser(validateCodeDto);
-    }
-
-    public UserEntity getUserById(Integer id){
-
-        Optional<UserEntity> optionalUser = userCrud.findById(id);
-
-        if(optionalUser.isEmpty()){
-            throw new BusinessException(HttpStatus.NOT_FOUND, "El usuario no ha sido encontrado");
-        }
-
-        return optionalUser.get();
     }
 
     public ResponseSuccessfullyDto updateAuthenticationStatus(Integer userId, Boolean status){
