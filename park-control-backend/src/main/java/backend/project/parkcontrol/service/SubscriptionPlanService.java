@@ -8,6 +8,8 @@ import backend.project.parkcontrol.repository.crud.SubscriptionPlanCrud;
 import backend.project.parkcontrol.repository.entities.SubscriptionPlan;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import java.util.*;
@@ -43,13 +45,21 @@ public class SubscriptionPlanService {
         e.setDaily_hours(dto.getDaily_hours());
         e.setTotal_discount(dto.getTotal_discount());
         e.setAnnual_discount(dto.getAnnual_discount());
+        try {
+            subscriptionPlanCrud.save(e);
 
-        subscriptionPlanCrud.save(e);
+            return ResponseSuccessfullyDto.builder()
+                    .code(HttpStatus.CREATED)
+                    .message("Registro creado con Éxito")
+                    .build();
+        } catch (DataIntegrityViolationException ex) {
+            Throwable root = ExceptionUtils.getRootCause(ex);
+            if (root.getMessage().contains("SQLSTATE 45000")) {
+                throw new BusinessException(HttpStatus.BAD_REQUEST, root.getMessage());
+            }
+            throw ex;
+        }
 
-        return ResponseSuccessfullyDto.builder()
-                .code(HttpStatus.CREATED)
-                .message("Registro creado con Éxito")
-                .build();
     }
 
     public ResponseSuccessfullyDto updateSubscriptionPlan(SubscriptionPlanDto dto) {
@@ -60,12 +70,20 @@ public class SubscriptionPlanService {
         existing.setTotal_discount(dto.getTotal_discount());
         existing.setAnnual_discount(dto.getAnnual_discount());
 
-        subscriptionPlanCrud.save(existing);
+        try {
+            subscriptionPlanCrud.save(existing);
 
-        return ResponseSuccessfullyDto.builder()
-                .code(HttpStatus.ACCEPTED)
-                .message("Registro actualizado con Éxito")
-                .build();
+            return ResponseSuccessfullyDto.builder()
+                    .code(HttpStatus.ACCEPTED)
+                    .message("Registro actualizado con Éxito")
+                    .build();
+        }  catch (DataIntegrityViolationException ex) {
+            Throwable root = ExceptionUtils.getRootCause(ex);
+            if (root.getMessage().contains("SQLSTATE 45000")) {
+                throw new BusinessException(HttpStatus.BAD_REQUEST, root.getMessage());
+            }
+            throw ex;
+        }
     }
 
     public ResponseSuccessfullyDto deleteSubscriptionPlan(Integer id) {
