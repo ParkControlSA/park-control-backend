@@ -3,6 +3,7 @@ package backend.project.parkcontrol.service;
 
 import backend.project.parkcontrol.dto.request.LoginDto;
 import backend.project.parkcontrol.dto.request.NewUserDto;
+import backend.project.parkcontrol.dto.request.RecoveryPasswordDto;
 import backend.project.parkcontrol.dto.request.ValidateCodeDto;
 import backend.project.parkcontrol.dto.response.ResponseSuccessfullyDto;
 import backend.project.parkcontrol.dto.response.UserDto;
@@ -124,7 +125,7 @@ public class UserService {
     }
 
     public List<UserEntity> getUsersByRolId(Integer idRol) {
-        return  userCrud.findById_role(idRol);
+        return  userCrud.findById_role(idRol).get();
     }
 
     public ResponseSuccessfullyDto getUsersByRolIdResponse(Integer idRol) {
@@ -193,6 +194,28 @@ public class UserService {
         }catch (Exception exception){
             throw new BusinessException(HttpStatus.BAD_REQUEST,"Error al actualizar los permisos de autenticación en 2 pasos.");
         }
+    }
+
+    public ResponseSuccessfullyDto recoveryPassword(RecoveryPasswordDto recoveryPasswordDto, Integer userId){
+
+        if(!recoveryPasswordDto.getNewPassword().equals(recoveryPasswordDto.getConfirmNewPassword())){
+            throw new BusinessException(HttpStatus.BAD_REQUEST,"La nueva contraseña y la confirmación no coinciden");
+        }
+
+        Optional<UserEntity> userOptional = userCrud.findById(userId);
+
+        if(userOptional.isEmpty()){
+            throw new BusinessException(HttpStatus.NOT_FOUND,"El usuario no ha sido encontrado");
+        }
+        String passwordHashed = utils.hashPassword(recoveryPasswordDto.getNewPassword());
+
+        UserEntity user = userOptional.get();
+        user.setPassword(passwordHashed);
+        userCrud.save(user);
+
+        return ResponseSuccessfullyDto.builder().code(HttpStatus.OK)
+                .message("La contraseña ha sido actualizada, inicie sesión nuevamente")
+                .build();
     }
 
 
