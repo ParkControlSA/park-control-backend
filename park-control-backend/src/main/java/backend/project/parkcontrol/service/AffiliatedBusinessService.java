@@ -29,7 +29,6 @@ public class AffiliatedBusinessService {
     // FK helper: find by id_user
     public List<AffiliatedBusiness> getById_user(Integer id) {
         List<AffiliatedBusiness> list = affiliatedbusinessCrud.findById_user(id);
-        if (list.isEmpty()) throw new BusinessException(HttpStatus.NOT_FOUND, "Not found");
         return list;
     }
 
@@ -40,8 +39,6 @@ public class AffiliatedBusinessService {
 
     public AffiliatedBusiness getAffiliatedBusinessById(Integer id) {
         Optional<AffiliatedBusiness> optional = affiliatedbusinessCrud.findById(id);
-        if (optional.isEmpty())
-            throw new BusinessException(HttpStatus.NOT_FOUND, "AffiliatedBusiness not found");
         return optional.get();
     }
 
