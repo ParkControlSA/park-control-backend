@@ -52,14 +52,19 @@ public class SubscriptionPlanService {
                     .code(HttpStatus.CREATED)
                     .message("Registro creado con Éxito")
                     .build();
-        } catch (DataIntegrityViolationException ex) {
+        }catch (DataIntegrityViolationException ex) {
             Throwable root = ExceptionUtils.getRootCause(ex);
-            if (root.getMessage().contains("SQLSTATE 45000")) {
-                throw new BusinessException(HttpStatus.BAD_REQUEST, root.getMessage());
+            if (root != null && root.getMessage() != null) {
+                String msg = root.getMessage();
+                if (msg.contains("45000")) {
+                    throw new BusinessException(HttpStatus.BAD_REQUEST, msg);
+                }
             }
-            throw ex;
+            throw new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al actualizar el plan de suscripción");
+        } catch (Exception ex) {
+            // Cualquier otra excepción no prevista
+            throw new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR, "Error inesperado: " + ex.getMessage());
         }
-
     }
 
     public ResponseSuccessfullyDto updateSubscriptionPlan(SubscriptionPlanDto dto) {
@@ -77,12 +82,16 @@ public class SubscriptionPlanService {
                     .code(HttpStatus.ACCEPTED)
                     .message("Registro actualizado con Éxito")
                     .build();
-        }  catch (DataIntegrityViolationException ex) {
+        } catch (Exception ex) {
+            // Cualquier otra excepción no prevista
             Throwable root = ExceptionUtils.getRootCause(ex);
-            if (root.getMessage().contains("SQLSTATE 45000")) {
-                throw new BusinessException(HttpStatus.BAD_REQUEST, root.getMessage());
+            if (root != null && root.getMessage() != null) {
+                String msg = root.getMessage();
+                throw new BusinessException(HttpStatus.BAD_REQUEST, msg);
+            }else{
+                throw new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR, "Error inesperado: " + ex.getMessage());
             }
-            throw ex;
+
         }
     }
 
