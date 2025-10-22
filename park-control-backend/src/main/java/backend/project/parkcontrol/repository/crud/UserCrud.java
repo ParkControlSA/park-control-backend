@@ -12,8 +12,7 @@ import java.util.Optional;
 @Repository
 public interface UserCrud extends JpaRepository<UserEntity, Integer> {
 
-
-    @Query(value = "SELECT u FROM user u WHERE u.username = :username")
+    @Query("SELECT u FROM UserEntity u WHERE u.username = :username")
     Optional<UserEntity> getUserByUsername(String username);
 
     @Query(value = "select * from user where id_rol = ?", nativeQuery = true)
