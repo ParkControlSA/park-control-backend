@@ -28,7 +28,7 @@ public class UserEntity {
 
     private Boolean authentication = Boolean.FALSE;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_rol", referencedColumnName = "id")
     private RoleEntity rol;
 
