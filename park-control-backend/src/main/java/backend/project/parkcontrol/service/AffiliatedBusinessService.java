@@ -20,6 +20,7 @@ import java.util.*;
 public class AffiliatedBusinessService {
     private final AffiliatedBusinessCrud affiliatedbusinessCrud;
     private final UserCrud userCrud;
+    private final ValidationService validationService;
 
     // ==============================
     // GETTERS
@@ -60,6 +61,7 @@ public class AffiliatedBusinessService {
     public ResponseSuccessfullyDto createAffiliatedBusiness(NewAffiliatedBusinessDto dto) {
         AffiliatedBusiness e = new AffiliatedBusiness();
         e.setBusiness_name(dto.getBusiness_name());
+        validationService.validatePositiveNumber(dto.getGranted_hours(), "Horas Otorgadas");
         e.setGranted_hours(dto.getGranted_hours());
         e.setUser(userCrud.findById(dto.getId_user()).orElseThrow(
                 () -> new BusinessException(HttpStatus.NOT_FOUND, "User not found")));
@@ -75,6 +77,7 @@ public class AffiliatedBusinessService {
     public ResponseSuccessfullyDto updateAffiliatedBusiness(AffiliatedBusinessDto dto) {
         AffiliatedBusiness existing = getAffiliatedBusinessById(dto.getId());
         existing.setBusiness_name(dto.getBusiness_name());
+        validationService.validatePositiveNumber(dto.getGranted_hours(), "Horas Otorgadas");
         existing.setGranted_hours(dto.getGranted_hours());
         existing.setUser(userCrud.findById(dto.getId_user()).orElseThrow(
                 () -> new BusinessException(HttpStatus.NOT_FOUND, "User not found")));
