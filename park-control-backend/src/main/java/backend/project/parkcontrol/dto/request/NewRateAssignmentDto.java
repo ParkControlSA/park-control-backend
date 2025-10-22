@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 public class NewRateAssignmentDto {
     private Integer id_branch;
     private Double hourly_rate;
-    private Boolean is_active;
-    private LocalDateTime insert_date;
-    private LocalDateTime update_date;
+    //private Boolean is_active;
+    //private LocalDateTime insert_date;
+    //private LocalDateTime update_date;
 }
