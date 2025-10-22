@@ -26,25 +26,27 @@ public class RateAssignmentService {
 
     public List<RateAssignment> getById_branch(Integer id) {
         List<RateAssignment> list = rateAssignmentCrud.findById_branch(id);
-        if (list.isEmpty()) throw new BusinessException(HttpStatus.NOT_FOUND, "No se encontraron registros para la sucursal");
         return list;
     }
 
     public List<RateAssignment> getAllRateAssignmentList() {
         List<RateAssignment> list = rateAssignmentCrud.findAll();
-        if (list.isEmpty()) throw new BusinessException(HttpStatus.NOT_FOUND, "No hay registros");
+        return list;
+    }
+
+    public List<RateAssignment> getRateAssignamentById_branchIsActive(Integer id) {
+        List<RateAssignment> list = rateAssignmentCrud.findById_branchIsActive(id, true);
         return list;
     }
 
     public RateAssignment getRateAssignmentById(Integer id) {
-        return rateAssignmentCrud.findById(id)
-                .orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, "Asignación de tarifa no encontrada"));
+        return rateAssignmentCrud.findById(id).get();
     }
 
     // ==============================
     // CRUD Methods
     // ==============================
-
+//YA DESACTIVA EL REGISTRO ANTERIOR DESDE LA BASE DE DATOS
     public ResponseSuccessfullyDto createRateAssignment(NewRateAssignmentDto dto) {
         RateAssignment e = new RateAssignment();
         e.setBranch(branchService.getBranchById(dto.getId_branch()));
@@ -111,6 +113,14 @@ public class RateAssignmentService {
                 .code(HttpStatus.FOUND)
                 .message("Registros encontrados con Éxito")
                 .body(getById_branch(id))
+                .build();
+    }
+
+    public ResponseSuccessfullyDto getRateAssignamentById_branchIsActiveResponse(Integer id) {
+        return ResponseSuccessfullyDto.builder()
+                .code(HttpStatus.FOUND)
+                .message("Registros encontrados con Éxito")
+                .body(getRateAssignamentById_branchIsActive(id))
                 .build();
     }
 }

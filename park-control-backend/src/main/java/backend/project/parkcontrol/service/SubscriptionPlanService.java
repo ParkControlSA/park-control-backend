@@ -25,13 +25,11 @@ public class SubscriptionPlanService {
 
     public List<SubscriptionPlan> getAllSubscriptionPlanList() {
         List<SubscriptionPlan> list = subscriptionPlanCrud.findAll();
-        if (list.isEmpty()) throw new BusinessException(HttpStatus.NOT_FOUND, "No hay registros");
         return list;
     }
 
     public SubscriptionPlan getSubscriptionPlanById(Integer id) {
-        return subscriptionPlanCrud.findById(id)
-                .orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, "Plan de suscripción no encontrado"));
+        return subscriptionPlanCrud.findById(id).get();
     }
 
     // ==============================

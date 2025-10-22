@@ -30,7 +30,6 @@ public class BranchService {
 
     public Branch getBranchById(Integer id) {
         Optional<Branch> optional = branchCrud.findById(id);
-        if (optional.isEmpty()) throw new BusinessException(HttpStatus.NOT_FOUND, "Branch not found");
         return optional.get();
     }
 

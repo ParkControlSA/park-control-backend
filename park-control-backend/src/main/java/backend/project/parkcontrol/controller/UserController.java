@@ -6,6 +6,7 @@ import backend.project.parkcontrol.dto.request.NewUserDto;
 import backend.project.parkcontrol.dto.request.UpdateAuthStatusDto;
 import backend.project.parkcontrol.dto.request.ValidateCodeDto;
 import backend.project.parkcontrol.dto.response.ResponseSuccessfullyDto;
+import backend.project.parkcontrol.dto.response.UserDto;
 import backend.project.parkcontrol.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +26,41 @@ public class UserController implements UserApi {
         log.info("POST /user  -- create user");
         ResponseSuccessfullyDto responseSuccessfullyDto = userService.createUser(newUserDto);
         return new ResponseEntity<>(responseSuccessfullyDto, responseSuccessfullyDto.getCode());
+    }
+
+    @Override
+    public ResponseEntity<ResponseSuccessfullyDto> updateUser(UserDto userDto) {
+        log.info("PUT /user -- update user");
+        ResponseSuccessfullyDto response = userService.updateUser(userDto);
+        return new ResponseEntity<>(response, response.getCode());
+    }
+
+    @Override
+    public ResponseEntity<ResponseSuccessfullyDto> deleteUser(Integer id) {
+        log.info("DELETE /user/{}", id);
+        ResponseSuccessfullyDto response = userService.deleteUser(id);
+        return new ResponseEntity<>(response, response.getCode());
+    }
+
+    @Override
+    public ResponseEntity<ResponseSuccessfullyDto> getUserById(Integer id) {
+        log.info("GET /user/{}", id);
+        ResponseSuccessfullyDto response = userService.getUserByIdResponse(id);
+        return new ResponseEntity<>(response, response.getCode());
+    }
+
+    @Override
+    public ResponseEntity<ResponseSuccessfullyDto> getAllUsers() {
+        log.info("GET /user -- get all users");
+        ResponseSuccessfullyDto response = userService.getAllUsersListResponse();
+        return new ResponseEntity<>(response, response.getCode());
+    }
+
+    @Override
+    public ResponseEntity<ResponseSuccessfullyDto> getUsersByRol(Integer idRol) {
+        log.info("GET /user/role/{}", idRol);
+        ResponseSuccessfullyDto response = userService.getUsersByRolIdResponse(idRol);
+        return new ResponseEntity<>(response, response.getCode());
     }
 
     @Override

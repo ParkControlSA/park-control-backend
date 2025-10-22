@@ -5,6 +5,7 @@ import backend.project.parkcontrol.dto.request.NewUserDto;
 import backend.project.parkcontrol.dto.request.UpdateAuthStatusDto;
 import backend.project.parkcontrol.dto.request.ValidateCodeDto;
 import backend.project.parkcontrol.dto.response.ResponseSuccessfullyDto;
+import backend.project.parkcontrol.dto.response.UserDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,9 +22,22 @@ public interface UserApi {
     @PostMapping("/code")
     ResponseEntity<ResponseSuccessfullyDto> validateToken(@RequestBody ValidateCodeDto validateCodeDto);
 
-
     @PutMapping("/authentication/status")
     ResponseEntity<ResponseSuccessfullyDto> updateAuthStatus(@RequestBody UpdateAuthStatusDto updateAuthStatusDto, @RequestHeader(value = "user") Integer userId);
 
+    @PutMapping
+    ResponseEntity<ResponseSuccessfullyDto> updateUser(@RequestBody UserDto userDto);
+
+    @DeleteMapping("/{id}")
+    ResponseEntity<ResponseSuccessfullyDto> deleteUser(@PathVariable Integer id);
+
+    @GetMapping("/{id}")
+    ResponseEntity<ResponseSuccessfullyDto> getUserById(@PathVariable Integer id);
+
+    @GetMapping
+    ResponseEntity<ResponseSuccessfullyDto> getAllUsers();
+
+    @GetMapping("/role/{idRol}")
+    ResponseEntity<ResponseSuccessfullyDto> getUsersByRol(@PathVariable Integer idRol);
 
 }
