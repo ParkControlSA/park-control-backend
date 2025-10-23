@@ -42,15 +42,24 @@ public class AffiliatedBusinessBranchService {
 
     public ResponseSuccessfullyDto deleteAffiliatedBusinessBranch(Integer id){
         AffiliatedBusinessBranch entity = getAffiliatedBusinessBranchById(id);
+        affiliatedbusinessbranchCrud.delete(entity);
         return ResponseSuccessfullyDto.builder().code(HttpStatus.ACCEPTED).message("Registro eliminado con Exito").build();
     }
 
     public ResponseSuccessfullyDto createAffiliatedBusinessBranch(NewAffiliatedBusinessBranchDto dto){
         AffiliatedBusinessBranch e = new AffiliatedBusinessBranch();
+        validateAffiliatedBusinessBranch(dto.getId_affiliated_business(),dto.getId_branch());
         e.setAffiliatedBusiness(affiliatedBusinessService.getAffiliatedBusinessById(dto.getId_affiliated_business()));
         e.setBranch(branchService.getBranchById(dto.getId_branch()));
         affiliatedbusinessbranchCrud.save(e);
         return ResponseSuccessfullyDto.builder().code(HttpStatus.CREATED).message("Registro creado con Exito").build();
+    }
+
+    private void validateAffiliatedBusinessBranch(Integer idAffiliatedBusiness, Integer idBranch) {
+        if(!affiliatedbusinessbranchCrud.findById_branchId_affiliated_business(idBranch, idAffiliatedBusiness).isEmpty()){
+            throw new BusinessException(HttpStatus.BAD_REQUEST,
+                    "El comercio yá está afiliado a la Sucursal");
+        }
     }
 
     public ResponseSuccessfullyDto updateAffiliatedBusinessBranch(AffiliatedBusinessBranchDto dto){
