@@ -40,5 +40,7 @@ public interface UserApi {
     @PostMapping("/recovery_password")
     ResponseEntity<ResponseSuccessfullyDto> recoveryPassword(@RequestBody RecoveryPasswordDto recoveryPasswordDto,
                                                              @RequestHeader(value = "user") Integer userId);
+    @PostMapping("/forgot_password")
+    ResponseEntity<ResponseSuccessfullyDto> userForgotPassword(@RequestBody UserForgotPasswordDto userForgotPasswordDto);
 
 }

@@ -1,10 +1,7 @@
 package backend.project.parkcontrol.service;
 
 
-import backend.project.parkcontrol.dto.request.LoginDto;
-import backend.project.parkcontrol.dto.request.NewUserDto;
-import backend.project.parkcontrol.dto.request.RecoveryPasswordDto;
-import backend.project.parkcontrol.dto.request.ValidateCodeDto;
+import backend.project.parkcontrol.dto.request.*;
 import backend.project.parkcontrol.dto.response.ResponseSuccessfullyDto;
 import backend.project.parkcontrol.dto.response.UserDto;
 import backend.project.parkcontrol.dto.response.UserInfoDto;
@@ -194,6 +191,24 @@ public class UserService {
         }catch (Exception exception){
             throw new BusinessException(HttpStatus.BAD_REQUEST,"Error al actualizar los permisos de autenticación en 2 pasos.");
         }
+    }
+
+    public ResponseSuccessfullyDto userForgotPassword(UserForgotPasswordDto userForgotPasswordDto){
+
+        Optional<UserEntity> userOptional = userCrud.getUserByUsername(userForgotPasswordDto.getUsername());
+
+        if(userOptional.isEmpty()){
+            throw new BusinessException(HttpStatus.NOT_FOUND,"El usuario no ha sido encontrado");
+        }
+
+        UserEntity user = userOptional.get();
+        sendCodeToUser(user);
+
+        return ResponseSuccessfullyDto.builder()
+                .code(HttpStatus.OK)
+                .message("Se ha enviado un codigo a tu correo para la recuperación de contraseña")
+                .body(UserInfoDto.builder().userId(user.getId()).build())
+                .build();
     }
 
     public ResponseSuccessfullyDto recoveryPassword(RecoveryPasswordDto recoveryPasswordDto, Integer userId){
