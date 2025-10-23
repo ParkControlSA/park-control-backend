@@ -55,6 +55,7 @@ public class UserService {
             return ResponseSuccessfullyDto
                     .builder()
                     .code(HttpStatus.CREATED)
+                    .body(Map.of("id", savedUser.getId()))
                     .message("El usuario fué creado correctamente")
                     .build();
         }catch (Exception exception){

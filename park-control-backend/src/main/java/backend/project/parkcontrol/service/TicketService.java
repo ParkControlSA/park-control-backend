@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Slf4j
@@ -74,16 +76,16 @@ public class TicketService {
         e.setPlate(dto.getPlate());
         //e.setCard(dto.getCard());
         //e.setQr(dto.getQr());
-       // e.setEntry_date(dto.getEntry_date());
+        e.setEntry_date(LocalDateTime.now());
         //e.setExit_date(dto.getExit_date());
         e.setIs_4r(dto.getIs_4r());
         //e.setStatus(dto.getStatus());
-
-        ticketCrud.save(e);
+        Ticket savedTicket = ticketCrud.save(e);
         //
         return ResponseSuccessfullyDto.builder()
                 .code(HttpStatus.CREATED)
                 .message("Registro creado con éxito")
+                .body(Map.of("id", savedTicket.getId()))
                 .build();
     }
 

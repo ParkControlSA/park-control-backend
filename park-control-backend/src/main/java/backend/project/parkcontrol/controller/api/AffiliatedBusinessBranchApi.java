@@ -11,17 +11,13 @@ public interface AffiliatedBusinessBranchApi {
 
 
     @PostMapping
-    ResponseEntity<ResponseSuccessfullyDto> createAffiliatedBusinessBranch(@RequestBody NewAffiliatedBusinessBranchDto dto,
-                                                                           @RequestHeader(name = "authorization") Integer userId);
+    ResponseEntity<ResponseSuccessfullyDto> createAffiliatedBusinessBranch(@RequestBody NewAffiliatedBusinessBranchDto dto);
 
     @PutMapping
-    ResponseEntity<ResponseSuccessfullyDto> updateAffiliatedBusinessBranch(@RequestBody AffiliatedBusinessBranchDto dto,
-                                                                           @RequestHeader(name = "authorization") Integer userId);
+    ResponseEntity<ResponseSuccessfullyDto> updateAffiliatedBusinessBranch(@RequestBody AffiliatedBusinessBranchDto dto);
 
     @DeleteMapping("/{id}")
-    ResponseEntity<ResponseSuccessfullyDto> deleteAffiliatedBusinessBranch(@PathVariable Integer id,
-                                                                           @RequestHeader(name = "authorization") Integer userId);
-
+    ResponseEntity<ResponseSuccessfullyDto> deleteAffiliatedBusinessBranch(@PathVariable Integer id);
 
     @GetMapping("/all")
     ResponseEntity<ResponseSuccessfullyDto> getAllAffiliatedBusinessBranchs();
