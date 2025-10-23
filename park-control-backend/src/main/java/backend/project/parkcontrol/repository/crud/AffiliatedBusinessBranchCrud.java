@@ -14,4 +14,6 @@ public interface AffiliatedBusinessBranchCrud extends JpaRepository<AffiliatedBu
     @Query(value = "select * from affiliated_business_branch where id_branch = ?", nativeQuery = true)
     List<AffiliatedBusinessBranch> findById_branch(Integer id_branch);
 
+    @Query(value = "select * from affiliated_business_branch where id_branch = ? and id_affiliated_business = ?", nativeQuery = true)
+    List<AffiliatedBusinessBranch> findById_branchId_affiliated_business(Integer id_branch, Integer id_affiliated_business);
 }

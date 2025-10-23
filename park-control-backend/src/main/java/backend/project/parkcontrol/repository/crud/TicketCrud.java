@@ -11,4 +11,7 @@ public interface TicketCrud extends JpaRepository<Ticket, Integer> {
     @Query(value = "select * from ticket where id_branch = ?", nativeQuery = true)
     List<Ticket> findById_branch(Integer id_branch);
 
+    @Query(value = "select * from ticket where plate = ? and status = ?", nativeQuery = true)
+    List<Ticket> findByPlateStatus(String plate, Integer status);
+
 }
