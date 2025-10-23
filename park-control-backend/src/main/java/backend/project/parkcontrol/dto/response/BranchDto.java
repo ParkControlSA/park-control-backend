@@ -17,4 +17,6 @@ public class BranchDto {
     private LocalTime closing_time;
     private Integer capacity_2r;
     private Integer capacity_4r;
+    private Integer ocupation_2r;
+    private Integer ocupation_4r;
 }
