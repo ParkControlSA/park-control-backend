@@ -97,7 +97,7 @@ public class TicketUsageService {
         ticketusageCrud.save(existing);
 
         return ResponseSuccessfullyDto.builder()
-                .code(HttpStatus.ACCEPTED)
+                .code(HttpStatus.OK)
                 .message("Registro actualizado con éxito")
                 .build();
     }
@@ -107,7 +107,7 @@ public class TicketUsageService {
         ticketusageCrud.delete(entity);
 
         return ResponseSuccessfullyDto.builder()
-                .code(HttpStatus.ACCEPTED)
+                .code(HttpStatus.OK)
                 .message("Registro eliminado con éxito")
                 .build();
     }

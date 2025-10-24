@@ -90,7 +90,7 @@ public class LicensePlateBlockRequestService {
         licensePlateBlockRequestCrud.save(existing);
 
         return ResponseSuccessfullyDto.builder()
-                .code(HttpStatus.ACCEPTED)
+                .code(HttpStatus.OK)
                 .message("Registro actualizado con Éxito")
                 .build();
     }
@@ -99,7 +99,7 @@ public class LicensePlateBlockRequestService {
         LicensePlateBlockRequest entity = getLicensePlateBlockRequestById(id);
         licensePlateBlockRequestCrud.delete(entity);
         return ResponseSuccessfullyDto.builder()
-                .code(HttpStatus.ACCEPTED)
+                .code(HttpStatus.OK)
                 .message("Registro eliminado con Éxito")
                 .build();
     }

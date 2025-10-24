@@ -43,7 +43,7 @@ public class AffiliatedBusinessBranchService {
     public ResponseSuccessfullyDto deleteAffiliatedBusinessBranch(Integer id){
         AffiliatedBusinessBranch entity = getAffiliatedBusinessBranchById(id);
         affiliatedbusinessbranchCrud.delete(entity);
-        return ResponseSuccessfullyDto.builder().code(HttpStatus.ACCEPTED).message("Registro eliminado con Exito").build();
+        return ResponseSuccessfullyDto.builder().code(HttpStatus.OK).message("Registro eliminado con Exito").build();
     }
 
     public ResponseSuccessfullyDto createAffiliatedBusinessBranch(NewAffiliatedBusinessBranchDto dto){
@@ -67,7 +67,7 @@ public class AffiliatedBusinessBranchService {
         existing.setAffiliatedBusiness(affiliatedBusinessService.getAffiliatedBusinessById(dto.getId_affiliated_business()));
         existing.setBranch(branchService.getBranchById(dto.getId_branch()));
         affiliatedbusinessbranchCrud.save(existing);
-        return ResponseSuccessfullyDto.builder().code(HttpStatus.ACCEPTED).message("Registro actualizado con Exito").build();
+        return ResponseSuccessfullyDto.builder().code(HttpStatus.OK).message("Registro actualizado con Exito").build();
     }
 
     public ResponseSuccessfullyDto getAffiliatedBusinessBranch(Integer id){

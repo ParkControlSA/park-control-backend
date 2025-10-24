@@ -77,7 +77,7 @@ public class UserService {
         userCrud.save(existingUser);
 
         return ResponseSuccessfullyDto.builder()
-                .code(HttpStatus.ACCEPTED)
+                .code(HttpStatus.OK)
                 .message("Usuario actualizado correctamente")
                 .build();
     }
@@ -90,7 +90,7 @@ public class UserService {
         userCrud.delete(user);
 
         return ResponseSuccessfullyDto.builder()
-                .code(HttpStatus.ACCEPTED)
+                .code(HttpStatus.OK)
                 .message("Usuario eliminado correctamente")
                 .build();
     }
@@ -162,7 +162,7 @@ public class UserService {
                 .autentication(user.getAuthentication())
                 .build();
 
-        return ResponseSuccessfullyDto.builder().code(HttpStatus.ACCEPTED).message(message).body(userInfoDto).build();
+        return ResponseSuccessfullyDto.builder().code(HttpStatus.OK).message(message).body(userInfoDto).build();
     }
 
     public void sendCodeToUser(UserEntity user){

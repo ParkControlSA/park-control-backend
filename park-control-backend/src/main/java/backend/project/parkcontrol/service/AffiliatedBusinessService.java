@@ -50,7 +50,7 @@ public class AffiliatedBusinessService {
         AffiliatedBusiness entity = getAffiliatedBusinessById(id);
         affiliatedbusinessCrud.delete(entity);
         return ResponseSuccessfullyDto.builder()
-                .code(HttpStatus.ACCEPTED)
+                .code(HttpStatus.OK)
                 .message("Registro eliminado con Éxito")
                 .build();
     }
@@ -82,7 +82,7 @@ public class AffiliatedBusinessService {
         affiliatedbusinessCrud.save(existing);
 
         return ResponseSuccessfullyDto.builder()
-                .code(HttpStatus.ACCEPTED)
+                .code(HttpStatus.OK)
                 .message("Registro actualizado con Éxito")
                 .build();
     }
