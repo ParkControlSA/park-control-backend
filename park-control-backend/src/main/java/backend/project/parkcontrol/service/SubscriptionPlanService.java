@@ -79,7 +79,7 @@ public class SubscriptionPlanService {
             subscriptionPlanCrud.save(existing);
 
             return ResponseSuccessfullyDto.builder()
-                    .code(HttpStatus.ACCEPTED)
+                    .code(HttpStatus.OK)
                     .message("Registro actualizado con Éxito")
                     .build();
         } catch (Exception ex) {
@@ -99,7 +99,7 @@ public class SubscriptionPlanService {
         SubscriptionPlan entity = getSubscriptionPlanById(id);
         subscriptionPlanCrud.delete(entity);
         return ResponseSuccessfullyDto.builder()
-                .code(HttpStatus.ACCEPTED)
+                .code(HttpStatus.OK)
                 .message("Registro eliminado con Éxito")
                 .build();
     }

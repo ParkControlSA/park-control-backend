@@ -91,7 +91,7 @@ public class TicketPaymentService {
         ticketpaymentCrud.save(existing);
 
         return ResponseSuccessfullyDto.builder()
-                .code(HttpStatus.ACCEPTED)
+                .code(HttpStatus.OK)
                 .message("Registro actualizado con Éxito")
                 .build();
     }
@@ -101,7 +101,7 @@ public class TicketPaymentService {
         ticketpaymentCrud.delete(entity);
 
         return ResponseSuccessfullyDto.builder()
-                .code(HttpStatus.ACCEPTED)
+                .code(HttpStatus.OK)
                 .message("Registro eliminado con Éxito")
                 .build();
     }

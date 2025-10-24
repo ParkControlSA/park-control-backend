@@ -20,8 +20,9 @@ public class Contract {
     @JoinColumn(name = "id_user", referencedColumnName = "id")
     private UserEntity user;
 
-    @Column(name = "id_plan")
-    private Integer id_plan;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_plan", referencedColumnName = "id")
+    private SubscriptionPlan subscriptionPlan;
 
     @Column(name = "is_4r")
     private Boolean is_4r;

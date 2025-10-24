@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Slf4j
@@ -20,6 +21,7 @@ import java.util.*;
 public class ContractService {
     private final ContractCrud contractCrud;
     private final UserCrud userCrud;
+    private final SubscriptionPlanService subscriptionPlanService;
 
     // ==============================
     // GETTERS
@@ -38,8 +40,7 @@ public class ContractService {
     }
 
     public Contract getContractById(Integer id) {
-        Optional<Contract> optional = contractCrud.findById(id);
-        if (optional.isEmpty()) throw new BusinessException(HttpStatus.NOT_FOUND, "Contract not found");
+        Optional<Contract> optional = contractCrud.findById(id);       
         return optional.get();
     }
 
@@ -51,7 +52,7 @@ public class ContractService {
         Contract entity = getContractById(id);
         contractCrud.delete(entity);
         return ResponseSuccessfullyDto.builder()
-                .code(HttpStatus.ACCEPTED)
+                .code(HttpStatus.OK)
                 .message("Registro eliminado con Éxito")
                 .build();
     }
@@ -60,16 +61,18 @@ public class ContractService {
         Contract e = new Contract();
         e.setUser(userCrud.findById(dto.getId_user()).orElseThrow(
                 () -> new BusinessException(HttpStatus.NOT_FOUND, "User not found")));
-        e.setId_plan(dto.getId_plan());
+        e.setSubscriptionPlan(subscriptionPlanService.getSubscriptionPlanById(dto.getId_plan()));
         e.setIs_4r(dto.getIs_4r());
         e.setLicense_plate(dto.getLicense_plate());
-        e.setStart_date(dto.getStart_date());
-        e.setEnd_date(dto.getEnd_date());
+        LocalDateTime hoy = LocalDateTime.now();
+        e.setStart_date(hoy);
+        e.setEnd_date(hoy.plusMonths(dto.getMonths()));
         e.setMonths(dto.getMonths());
         e.setIs_anual(dto.getIs_anual());
-        e.setActive(dto.getActive());
+        e.setActive(true);
         contractCrud.save(e);
-
+//  CREAR CONTRACT PAYMENT
+        //CREAR MUCHOS HISTORY CONTRACT
         return ResponseSuccessfullyDto.builder()
                 .code(HttpStatus.CREATED)
                 .message("Registro creado con Éxito")
@@ -80,7 +83,7 @@ public class ContractService {
         Contract existing = getContractById(dto.getId());
         existing.setUser(userCrud.findById(dto.getId_user()).orElseThrow(
                 () -> new BusinessException(HttpStatus.NOT_FOUND, "User not found")));
-        existing.setId_plan(dto.getId_plan());
+        existing.setSubscriptionPlan(subscriptionPlanService.getSubscriptionPlanById(dto.getId_plan()));
         existing.setIs_4r(dto.getIs_4r());
         existing.setLicense_plate(dto.getLicense_plate());
         existing.setStart_date(dto.getStart_date());
@@ -91,7 +94,7 @@ public class ContractService {
         contractCrud.save(existing);
 
         return ResponseSuccessfullyDto.builder()
-                .code(HttpStatus.ACCEPTED)
+                .code(HttpStatus.OK)
                 .message("Registro actualizado con Éxito")
                 .build();
     }

@@ -42,7 +42,7 @@ public class BranchService {
         Branch entity = getBranchById(id);
         branchCrud.delete(entity);
         return ResponseSuccessfullyDto.builder()
-                .code(HttpStatus.ACCEPTED)
+                .code(HttpStatus.OK)
                 .message("Registro eliminado con Éxito")
                 .build();
     }
@@ -84,7 +84,7 @@ public class BranchService {
         branchCrud.save(existing);
 
         return ResponseSuccessfullyDto.builder()
-                .code(HttpStatus.ACCEPTED)
+                .code(HttpStatus.OK)
                 .message("Registro actualizado con Éxito")
                 .build();
     }

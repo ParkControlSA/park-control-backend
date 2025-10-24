@@ -36,9 +36,7 @@ public class TicketService {
     // GETTERS
     // ==============================
     public List<Ticket> getById_branch(Integer id){
-        List<Ticket> list = ticketCrud.findById_branch(id);
-        if(list.isEmpty()) throw new BusinessException(HttpStatus.NOT_FOUND, "No se encontraron registros para la sucursal");
-        return list;
+           return ticketCrud.findById_branch(id);
     }
 
     public ResponseSuccessfullyDto getById_branchResponse(Integer id){
@@ -50,9 +48,7 @@ public class TicketService {
     }
 
     public List<Ticket> getAllTicketList(){
-        List<Ticket> list = ticketCrud.findAll();
-        if(list.isEmpty()) throw new BusinessException(HttpStatus.NOT_FOUND, "No hay registros");
-        return list;
+        return ticketCrud.findAll();
     }
 
     public ResponseSuccessfullyDto getAllTicketListResponse(){
@@ -64,8 +60,7 @@ public class TicketService {
     }
 
     public Ticket getTicketById(Integer id){
-        return ticketCrud.findById(id)
-                .orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, "Registro no encontrado"));
+        return ticketCrud.findById(id).get();
     }
 
     public ResponseSuccessfullyDto getTicketByIdResponse(Integer id){
@@ -147,7 +142,7 @@ public class TicketService {
         ticketCrud.save(existing);
 
         return ResponseSuccessfullyDto.builder()
-                .code(HttpStatus.ACCEPTED)
+                .code(HttpStatus.OK)
                 .message("Registro actualizado con éxito")
                 .build();
     }
@@ -157,7 +152,7 @@ public class TicketService {
         ticketCrud.delete(entity);
 
         return ResponseSuccessfullyDto.builder()
-                .code(HttpStatus.ACCEPTED)
+                .code(HttpStatus.OK)
                 .message("Registro eliminado con éxito")
                 .build();
     }

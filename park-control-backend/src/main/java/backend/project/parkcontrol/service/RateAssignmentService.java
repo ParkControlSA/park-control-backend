@@ -88,7 +88,7 @@ public class RateAssignmentService {
         rateAssignmentCrud.save(existing);
 
         return ResponseSuccessfullyDto.builder()
-                .code(HttpStatus.ACCEPTED)
+                .code(HttpStatus.OK)
                 .message("Registro actualizado con Éxito")
                 .build();
     }
@@ -97,7 +97,7 @@ public class RateAssignmentService {
         RateAssignment entity = getRateAssignmentById(id);
         rateAssignmentCrud.delete(entity);
         return ResponseSuccessfullyDto.builder()
-                .code(HttpStatus.ACCEPTED)
+                .code(HttpStatus.OK)
                 .message("Registro eliminado con Éxito")
                 .build();
     }

@@ -50,7 +50,7 @@ public class ContractHistoryService {
         ContractHistory entity = getContractHistoryById(id);
         contracthistoryCrud.delete(entity);
         return ResponseSuccessfullyDto.builder()
-                .code(HttpStatus.ACCEPTED)
+                .code(HttpStatus.OK)
                 .message("Registro eliminado con Éxito")
                 .build();
     }
@@ -78,7 +78,7 @@ public class ContractHistoryService {
         contracthistoryCrud.save(existing);
 
         return ResponseSuccessfullyDto.builder()
-                .code(HttpStatus.ACCEPTED)
+                .code(HttpStatus.OK)
                 .message("Registro actualizado con Éxito")
                 .build();
     }

@@ -50,7 +50,7 @@ public class ContractPaymentService {
         ContractPayment entity = getContractPaymentById(id);
         contractpaymentCrud.delete(entity);
         return ResponseSuccessfullyDto.builder()
-                .code(HttpStatus.ACCEPTED)
+                .code(HttpStatus.OK)
                 .message("Registro eliminado con Éxito")
                 .build();
     }
@@ -84,7 +84,7 @@ public class ContractPaymentService {
         contractpaymentCrud.save(existing);
 
         return ResponseSuccessfullyDto.builder()
-                .code(HttpStatus.ACCEPTED)
+                .code(HttpStatus.OK)
                 .message("Registro actualizado con Éxito")
                 .build();
     }
