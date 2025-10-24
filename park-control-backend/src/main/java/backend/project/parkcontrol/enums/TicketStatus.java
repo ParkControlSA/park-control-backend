@@ -2,9 +2,8 @@ package backend.project.parkcontrol.enums;
 
 public enum TicketStatus {
     ENTRADA_REGISTRADA(1),
-    SELLADO_COMERCIO(2),
-    SALIDA_REGISTRADA(3),
-    INCIDENTE(4);
+    SALIDA_REGISTRADA(2),
+    INCIDENTE(3);
 
     private final int value;
 
