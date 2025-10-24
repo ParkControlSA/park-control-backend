@@ -15,6 +15,7 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.qrcode.QRCodeWriter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -47,8 +48,20 @@ public class TicketService {
                 .build();
     }
 
+    public List<Ticket> getByPlate(String plate){
+        return ticketCrud.findByPlate(plate);
+    }
+
+    public ResponseSuccessfullyDto getByPlateResponse(String plate){
+        return ResponseSuccessfullyDto.builder()
+                .code(HttpStatus.FOUND)
+                .message("Registros encontrados con éxito")
+                .body(getByPlate(plate))
+                .build();
+    }
+
     public List<Ticket> getAllTicketList(){
-        return ticketCrud.findAll();
+        return ticketCrud.findAll(Sort.by(Sort.Direction.DESC, "id"));
     }
 
     public ResponseSuccessfullyDto getAllTicketListResponse(){
@@ -111,7 +124,7 @@ public class TicketService {
                 throw new BusinessException(HttpStatus.BAD_REQUEST,
                         "No hay espacio disponible para ingresar al parqueo con un vehículo de 4 ruedas.");
             }else{
-                branch.setCapacity_4r(ocupation_4r+1);
+                branch.setOcupation_4r(ocupation_4r+1);
                 branchCrud.save(branch);
                 log.info("Ocupacion de "+branch.getName()+" fue actualizada");
             }
@@ -121,11 +134,49 @@ public class TicketService {
                 throw new BusinessException(HttpStatus.BAD_REQUEST,
                         "No hay espacio disponible para ingresar al parqueo con un vehículo de 2 ruedas.");
             }else{
-                branch.setCapacity_4r(ocupation_2r+1);
+                branch.setOcupation_2r(ocupation_2r+1);
                 branchCrud.save(branch);
                 log.info("Ocupacion de "+branch.getName()+" fue actualizada");
             }
         }
+    }
+
+    public ResponseSuccessfullyDto closeTicket(String data, Integer typeData){
+        Ticket ticket;
+        if (typeData.equals(1)){//PLACA
+            ticket = ticketCrud.findByPlateStatus(data,TicketStatus.ENTRADA_REGISTRADA.getValue()).getFirst();
+        } else if (typeData.equals(2)) {//TARJETA
+            ticket = ticketCrud.findByCard(data).getFirst();
+        } else if (typeData.equals(3)) {//QR
+            ticket = ticketCrud.findByQr(data).getFirst();
+        } else {
+            ticket = ticketCrud.findById(Integer.valueOf(data)).get();
+        }
+
+        if (ticket.getStatus()!=TicketStatus.ENTRADA_REGISTRADA.getValue()){
+            throw new BusinessException(HttpStatus.BAD_REQUEST,
+                    "El vehículo ya no se encuentra dentro del parqueo.");
+        }
+
+        ticket.setStatus(TicketStatus.SALIDA_REGISTRADA.getValue());
+        ticketCrud.save(ticket);
+        updateAvailability(ticket);
+        return ResponseSuccessfullyDto.builder()
+                .code(HttpStatus.OK)
+                .message("Ticket cerrado")
+                .body(ticket)
+                .build();
+    }
+
+    private void updateAvailability(Ticket ticket) {
+        Branch branch = ticket.getBranch();
+        if (ticket.getIs_4r()){
+            branch.setOcupation_4r(branch.getOcupation_4r()-1);
+        }else{
+            branch.setOcupation_2r(branch.getOcupation_2r()-1);
+        }
+        log.info("Se actualizo la ocupacion de la sucursal");
+        branchCrud.save(branch);
     }
 
     public ResponseSuccessfullyDto updateTicket(TicketDto dto){

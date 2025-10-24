@@ -77,8 +77,6 @@ public class BranchService {
         validationService.validatePositiveNumber(dto.getCapacity_4r(), "Capacidad 4r");
         existing.setCapacity_2r(dto.getCapacity_2r());
         existing.setCapacity_4r(dto.getCapacity_4r());
-        validationService.validatePositiveNumber(dto.getOcupation_2r(), "Ocupacion 2r");
-        validationService.validatePositiveNumber(dto.getOcupation_4r(), "Ocupacion 4r");
         existing.setOcupation_2r(dto.getOcupation_2r());
         existing.setOcupation_4r(dto.getOcupation_4r());
         branchCrud.save(existing);
