@@ -20,14 +20,14 @@ public class ContractHistoryController implements ContractHistoryApi {
     // ==============================
     // CRUD
     // ==============================
-
+/*
     @Override
     public ResponseEntity<ResponseSuccessfullyDto> createContractHistory(NewContractHistoryDto dto) {
         log.info("POST /contractHistory");
         ResponseSuccessfullyDto resp = contractHistoryService.createContractHistory(dto);
         return new ResponseEntity<>(resp, resp.getCode());
     }
-
+*/
     @Override
     public ResponseEntity<ResponseSuccessfullyDto> updateContractHistory(ContractHistoryDto dto) {
         log.info("PUT /contractHistory");

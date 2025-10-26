@@ -78,7 +78,7 @@ public class ContractService {
         e.setActive(dto.getMonths() == CONTRACT_LIMIT_MONTHS);
         Contract saved = contractCrud.save(e);
         //Crea los historiales del contrato
-        contractHistoryService.createContractHistory(NewContractHistoryDto.builder().id_contract(saved.getId()).build());
+        contractHistoryService.createContractHistory(saved);
         return ResponseSuccessfullyDto.builder()
                 .code(HttpStatus.CREATED)
                 .body(Map.of("id", saved.getId()))

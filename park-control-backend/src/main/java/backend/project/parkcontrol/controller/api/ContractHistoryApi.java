@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.*;
 public interface ContractHistoryApi {
 
     // CRUD
-    @PostMapping
+   /* @PostMapping
     ResponseEntity<ResponseSuccessfullyDto> createContractHistory(@RequestBody NewContractHistoryDto dto);
-
+*/
     @PutMapping
     ResponseEntity<ResponseSuccessfullyDto> updateContractHistory(@RequestBody ContractHistoryDto dto);
 
