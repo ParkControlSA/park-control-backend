@@ -5,6 +5,8 @@ import backend.project.parkcontrol.dto.response.TicketUsageDto;
 import backend.project.parkcontrol.dto.response.ResponseSuccessfullyDto;
 import backend.project.parkcontrol.exception.BusinessException;
 import backend.project.parkcontrol.repository.crud.TicketUsageCrud;
+import backend.project.parkcontrol.repository.entities.RateAssignment;
+import backend.project.parkcontrol.repository.entities.Ticket;
 import backend.project.parkcontrol.repository.entities.TicketUsage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,14 +19,13 @@ import java.util.*;
 @Service
 public class TicketUsageService {
     private final TicketUsageCrud ticketusageCrud;
-    private final TicketService ticketService;
-
+    private final RateAssignmentService rateAssignmentService;
+    private static final Integer ID_MAIN_BRANCH = 1;
     // ==============================
     // GETTERS
     // ==============================
     public List<TicketUsage> getById_ticket(Integer id){
         List<TicketUsage> list = ticketusageCrud.findById_ticket(id);
-        if(list.isEmpty()) throw new BusinessException(HttpStatus.NOT_FOUND, "No se encontraron registros para el ticket");
         return list;
     }
 
@@ -38,7 +39,6 @@ public class TicketUsageService {
 
     public List<TicketUsage> getAllTicketUsageList(){
         List<TicketUsage> list = ticketusageCrud.findAll();
-        if(list.isEmpty()) throw new BusinessException(HttpStatus.NOT_FOUND, "No hay registros");
         return list;
     }
 
@@ -51,8 +51,7 @@ public class TicketUsageService {
     }
 
     public TicketUsage getTicketUsageById(Integer id){
-        return ticketusageCrud.findById(id)
-                .orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, "Registro no encontrado"));
+        return ticketusageCrud.findById(id).get();
     }
 
     public ResponseSuccessfullyDto getTicketUsageByIdResponse(Integer id){
@@ -68,7 +67,7 @@ public class TicketUsageService {
     // ==============================
     public ResponseSuccessfullyDto createTicketUsage(NewTicketUsageDto dto){
         TicketUsage e = new TicketUsage();
-        e.setTicket(ticketService.getTicketById(dto.getId_ticket()));
+        //e.setTicket(ticketService.getTicketById(dto.getId_ticket()));
         e.setGranted_hours(dto.getGranted_hours());
         e.setConsumed_plan_hours(dto.getConsumed_plan_hours());
         e.setExceeded_hours(dto.getExceeded_hours());
@@ -86,7 +85,7 @@ public class TicketUsageService {
 
     public ResponseSuccessfullyDto updateTicketUsage(TicketUsageDto dto){
         TicketUsage existing = getTicketUsageById(dto.getId());
-        existing.setTicket(ticketService.getTicketById(dto.getId_ticket()));
+        //existing.setTicket(ticketService.getTicketById(dto.getId_ticket()));
         existing.setGranted_hours(dto.getGranted_hours());
         existing.setConsumed_plan_hours(dto.getConsumed_plan_hours());
         existing.setExceeded_hours(dto.getExceeded_hours());
@@ -110,5 +109,20 @@ public class TicketUsageService {
                 .code(HttpStatus.OK)
                 .message("Registro eliminado con éxito")
                 .build();
+    }
+
+    public void updateRateAssignament(Ticket ticket){
+        TicketUsage existing = getById_ticket(ticket.getId()).getFirst();
+        RateAssignment rateAssignment = rateAssignmentService.getRateAssignamentById_branchIsActive(ticket.getBranch().getId()).getFirst();
+        Double rate;
+        if (rateAssignment!=null){
+            rate = rateAssignment.getHourly_rate();
+        }else{
+            rate = rateAssignmentService.getRateAssignamentById_branchIsActive(ID_MAIN_BRANCH).getFirst().getHourly_rate();
+        }
+        existing.setHourly_rate(rate);
+        ticketusageCrud.save(existing);
+
+        log.info("Tarifa Hora Aplicada.");
     }
 }

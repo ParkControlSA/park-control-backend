@@ -17,6 +17,6 @@ public class NewContractDto {
     //private LocalDateTime start_date;
     //private LocalDateTime end_date;
     private Integer months;
-    private Boolean is_anual;
+    //private Boolean is_anual;
     //private Boolean active;
 }
