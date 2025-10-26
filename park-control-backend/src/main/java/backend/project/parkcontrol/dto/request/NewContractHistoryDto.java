@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Builder
 public class NewContractHistoryDto {
     private Integer id_contract;
-    private Integer included_hours;
-    private Integer consumed_hours;
-    private LocalDateTime date;
+    //private Integer included_hours;
+    //private Integer consumed_hours;
+    //private LocalDateTime date;
 }
