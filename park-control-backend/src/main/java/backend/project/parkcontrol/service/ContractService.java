@@ -1,12 +1,14 @@
 package backend.project.parkcontrol.service;
 
 import backend.project.parkcontrol.dto.request.NewContractDto;
+import backend.project.parkcontrol.dto.request.NewContractHistoryDto;
 import backend.project.parkcontrol.dto.response.ContractDto;
 import backend.project.parkcontrol.dto.response.ResponseSuccessfullyDto;
 import backend.project.parkcontrol.exception.BusinessException;
 import backend.project.parkcontrol.repository.crud.ContractCrud;
 import backend.project.parkcontrol.repository.crud.UserCrud;
 import backend.project.parkcontrol.repository.entities.Contract;
+import backend.project.parkcontrol.repository.entities.ContractHistory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -24,6 +26,7 @@ public class ContractService {
     private final SubscriptionPlanService subscriptionPlanService;
     private static final Integer CONTRACT_LIMIT_MONTHS = 12;
     private final ValidationService validationService;
+    private final ContractHistoryService contractHistoryService;
 
     // ==============================
     // GETTERS
@@ -74,7 +77,8 @@ public class ContractService {
         e.setIs_anual(dto.getIs_anual());
         e.setActive(dto.getMonths() == CONTRACT_LIMIT_MONTHS);
         Contract saved = contractCrud.save(e);
-        //CREAR MUCHOS HISTORY CONTRACT
+        //Crea los historiales del contrato
+        contractHistoryService.createContractHistory(NewContractHistoryDto.builder().id_contract(saved.getId()).build());
         return ResponseSuccessfullyDto.builder()
                 .code(HttpStatus.CREATED)
                 .body(Map.of("id", saved.getId()))

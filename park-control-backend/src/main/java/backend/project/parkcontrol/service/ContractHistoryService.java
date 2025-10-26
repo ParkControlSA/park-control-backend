@@ -5,12 +5,17 @@ import backend.project.parkcontrol.dto.response.ContractHistoryDto;
 import backend.project.parkcontrol.dto.response.ResponseSuccessfullyDto;
 import backend.project.parkcontrol.exception.BusinessException;
 import backend.project.parkcontrol.repository.crud.ContractHistoryCrud;
+import backend.project.parkcontrol.repository.entities.Contract;
 import backend.project.parkcontrol.repository.entities.ContractHistory;
+import backend.project.parkcontrol.repository.entities.SubscriptionPlan;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 
 @Slf4j
@@ -26,19 +31,16 @@ public class ContractHistoryService {
 
     public List<ContractHistory> getById_contract(Integer id) {
         List<ContractHistory> list = contracthistoryCrud.findById_contract(id);
-        if (list.isEmpty()) throw new BusinessException(HttpStatus.NOT_FOUND, "Not found");
         return list;
     }
 
     public List<ContractHistory> getAllContractHistoryList() {
         List<ContractHistory> list = contracthistoryCrud.findAll();
-        if (list.isEmpty()) throw new BusinessException(HttpStatus.NOT_FOUND, "No records");
         return list;
     }
 
     public ContractHistory getContractHistoryById(Integer id) {
         Optional<ContractHistory> optional = contracthistoryCrud.findById(id);
-        if (optional.isEmpty()) throw new BusinessException(HttpStatus.NOT_FOUND, "ContractHistory not found");
         return optional.get();
     }
 
@@ -56,18 +58,46 @@ public class ContractHistoryService {
     }
 
     public ResponseSuccessfullyDto createContractHistory(NewContractHistoryDto dto) {
-        ContractHistory e = new ContractHistory();
-        e.setContract(contractService.getContractById(dto.getId_contract()));
-        e.setIncluded_hours(dto.getIncluded_hours());
-        e.setConsumed_hours(dto.getConsumed_hours());
-        e.setDate(dto.getDate());
-        contracthistoryCrud.save(e);
+
+        Contract contract = contractService.getContractById(dto.getId_contract());
+        verifyPlan(contract);
 
         return ResponseSuccessfullyDto.builder()
                 .code(HttpStatus.CREATED)
-                .message("Registro creado con Éxito")
+                .message("Registros creados con Éxito")
                 .build();
     }
+
+    private void verifyPlan(Contract contract) {
+        LocalDateTime today = LocalDateTime.now(ZoneId.of("America/Guatemala"));
+        LocalDateTime limitDay = today.plusMonths(contract.getMonths());
+        SubscriptionPlan subscriptionPlan = contract.getSubscriptionPlan();
+        if (subscriptionPlan.getId().equals(2) || subscriptionPlan.getId().equals(5)){
+            for (LocalDateTime fecha = today; fecha.isBefore(limitDay); fecha = fecha.plusDays(1)) {
+                saveContractHistory(contract, fecha);
+            }
+        } else if (subscriptionPlan.getId().equals(3) || subscriptionPlan.getId().equals(4)) {
+            for (LocalDateTime fecha = today; fecha.isBefore(limitDay); fecha = fecha.plusDays(1)) {
+                DayOfWeek dia = fecha.getDayOfWeek();
+                if (dia != DayOfWeek.SATURDAY && dia != DayOfWeek.SUNDAY){
+                    saveContractHistory(contract, fecha);
+                }
+            }
+        }else{
+            //LOGICA PLAN NOCTURNO
+        }
+    }
+
+    private void saveContractHistory(Contract contract, LocalDateTime fecha) {
+        ContractHistory e = new ContractHistory();
+        e.setContract(contract);
+        e.setIncluded_hours(contract.getSubscriptionPlan().getDaily_hours());
+        e.setConsumed_hours(0);
+        e.setDate(fecha);
+        contracthistoryCrud.save(e);
+        log.info("ContractHistory del "+ fecha +" guardada.");
+    }
+
 
     public ResponseSuccessfullyDto updateContractHistory(ContractHistoryDto dto) {
         ContractHistory existing = getContractHistoryById(dto.getId());
