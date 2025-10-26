@@ -1,9 +1,6 @@
 package backend.project.parkcontrol.controller.api;
 
-import backend.project.parkcontrol.dto.request.LoginDto;
-import backend.project.parkcontrol.dto.request.NewUserDto;
-import backend.project.parkcontrol.dto.request.UpdateAuthStatusDto;
-import backend.project.parkcontrol.dto.request.ValidateCodeDto;
+import backend.project.parkcontrol.dto.request.*;
 import backend.project.parkcontrol.dto.response.ResponseSuccessfullyDto;
 import backend.project.parkcontrol.dto.response.UserDto;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +23,7 @@ public interface UserApi {
     ResponseEntity<ResponseSuccessfullyDto> updateAuthStatus(@RequestBody UpdateAuthStatusDto updateAuthStatusDto, @RequestHeader(value = "user") Integer userId);
 
     @PutMapping
-    ResponseEntity<ResponseSuccessfullyDto> updateUser(@RequestBody UserDto userDto);
+    ResponseEntity<ResponseSuccessfullyDto> updateUser(@RequestBody UserUpdateDto userDto);
 
     @DeleteMapping("/{id}")
     ResponseEntity<ResponseSuccessfullyDto> deleteUser(@PathVariable Integer id);

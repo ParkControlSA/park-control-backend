@@ -1,10 +1,7 @@
 package backend.project.parkcontrol.controller;
 
 import backend.project.parkcontrol.controller.api.UserApi;
-import backend.project.parkcontrol.dto.request.LoginDto;
-import backend.project.parkcontrol.dto.request.NewUserDto;
-import backend.project.parkcontrol.dto.request.UpdateAuthStatusDto;
-import backend.project.parkcontrol.dto.request.ValidateCodeDto;
+import backend.project.parkcontrol.dto.request.*;
 import backend.project.parkcontrol.dto.response.ResponseSuccessfullyDto;
 import backend.project.parkcontrol.dto.response.UserDto;
 import backend.project.parkcontrol.service.UserService;
@@ -29,7 +26,7 @@ public class UserController implements UserApi {
     }
 
     @Override
-    public ResponseEntity<ResponseSuccessfullyDto> updateUser(UserDto userDto) {
+    public ResponseEntity<ResponseSuccessfullyDto> updateUser(UserUpdateDto userDto) {
         log.info("PUT /user -- update user");
         ResponseSuccessfullyDto response = userService.updateUser(userDto);
         return new ResponseEntity<>(response, response.getCode());

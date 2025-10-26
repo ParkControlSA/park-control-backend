@@ -3,6 +3,7 @@ package backend.project.parkcontrol.service;
 
 import backend.project.parkcontrol.dto.request.LoginDto;
 import backend.project.parkcontrol.dto.request.NewUserDto;
+import backend.project.parkcontrol.dto.request.UserUpdateDto;
 import backend.project.parkcontrol.dto.request.ValidateCodeDto;
 import backend.project.parkcontrol.dto.response.ResponseSuccessfullyDto;
 import backend.project.parkcontrol.dto.response.UserDto;
@@ -64,13 +65,12 @@ public class UserService {
         }
     }
 
-    public ResponseSuccessfullyDto updateUser(UserDto userDto) {
+    public ResponseSuccessfullyDto updateUser(UserUpdateDto userDto) {
         UserEntity existingUser = getUserById(userDto.getId());
 
         // Actualizar campos
         existingUser.setName(userDto.getNombre());
         existingUser.setUsername(userDto.getUsername());
-        existingUser.setPassword(userDto.getPassword());
         existingUser.setEmail(userDto.getEmail());
         existingUser.setPhone(userDto.getTelefono());
         existingUser.setRol(rolService.getRoleById(userDto.getRol()));
