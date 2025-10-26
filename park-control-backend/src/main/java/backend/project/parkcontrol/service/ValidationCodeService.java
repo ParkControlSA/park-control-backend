@@ -74,7 +74,7 @@ public class ValidationCodeService {
                 .build();
 
         return ResponseSuccessfullyDto.builder()
-                .code(HttpStatus.ACCEPTED)
+                .code(HttpStatus.OK)
                 .message("Inicio de sesión exitoso")
                 .body(userInfoDto)
                 .build();

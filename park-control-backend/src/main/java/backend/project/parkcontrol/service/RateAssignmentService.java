@@ -23,6 +23,7 @@ public class RateAssignmentService {
     private final BranchService branchService;
     private final ValidationService validationService;
     private static final Boolean ACTIVE_DEFAULT = true;
+    private static final Boolean DESACTIVE_STATUS = false;
     // ==============================
     // GETTERS
     // ==============================
@@ -49,7 +50,7 @@ public class RateAssignmentService {
     // ==============================
     // CRUD Methods
     // ==============================
-//YA DESACTIVA EL REGISTRO ANTERIOR DESDE LA BASE DE DATOS
+
     public ResponseSuccessfullyDto createRateAssignment(NewRateAssignmentDto dto) {
         RateAssignment e = new RateAssignment();
         e.setBranch(branchService.getBranchById(dto.getId_branch()));
@@ -57,13 +58,21 @@ public class RateAssignmentService {
         e.setIs_active(ACTIVE_DEFAULT);
         e.setInsert_date(LocalDateTime.now());
         e.setUpdate_date(LocalDateTime.now());
-
+        verifyRateAssignment(e.getBranch().getId());
         rateAssignmentCrud.save(e);
 
         return ResponseSuccessfullyDto.builder()
                 .code(HttpStatus.CREATED)
                 .message("Registro creado con Éxito")
                 .build();
+    }
+
+    private void verifyRateAssignment(Integer id) {
+        if(!rateAssignmentCrud.findById_branchIsActive(id, true).isEmpty()){
+            RateAssignment e = rateAssignmentCrud.findById_branchIsActive(id, true).getFirst();
+            e.setIs_active(DESACTIVE_STATUS);
+            rateAssignmentCrud.save(e);
+        }
     }
 
     public ResponseSuccessfullyDto updateRateAssignment(RateAssignmentDto dto) {
@@ -79,7 +88,7 @@ public class RateAssignmentService {
         rateAssignmentCrud.save(existing);
 
         return ResponseSuccessfullyDto.builder()
-                .code(HttpStatus.ACCEPTED)
+                .code(HttpStatus.OK)
                 .message("Registro actualizado con Éxito")
                 .build();
     }
@@ -88,7 +97,7 @@ public class RateAssignmentService {
         RateAssignment entity = getRateAssignmentById(id);
         rateAssignmentCrud.delete(entity);
         return ResponseSuccessfullyDto.builder()
-                .code(HttpStatus.ACCEPTED)
+                .code(HttpStatus.OK)
                 .message("Registro eliminado con Éxito")
                 .build();
     }

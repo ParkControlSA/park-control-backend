@@ -28,4 +28,20 @@ public interface TicketApi {
     // Filtro por sucursal
     @GetMapping("/branch/{id}")
     ResponseEntity<ResponseSuccessfullyDto> getById_branch(@PathVariable Integer id);
+    // Placa
+    @GetMapping("/plate/{plate}")
+    ResponseEntity<ResponseSuccessfullyDto> getByPlate(@PathVariable String plate);
+
+    //Cerrar Ticket
+    @PutMapping("/id/{id}")
+    ResponseEntity<ResponseSuccessfullyDto> closeTicketId(@PathVariable Integer id);
+
+    @PutMapping("/plate/{plate}")
+    ResponseEntity<ResponseSuccessfullyDto> closeTicketPlate(@PathVariable String plate);
+
+    @PutMapping("/card/{card}")
+    ResponseEntity<ResponseSuccessfullyDto> closeTicketCard(@PathVariable String card);
+
+    @PutMapping("/qr/{qr}")
+    ResponseEntity<ResponseSuccessfullyDto> closeTicketQr(@PathVariable String qr);
 }

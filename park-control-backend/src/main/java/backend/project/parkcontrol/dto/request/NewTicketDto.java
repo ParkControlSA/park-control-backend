@@ -12,10 +12,10 @@ import java.time.LocalDateTime;
 public class NewTicketDto {
     private Integer id_branch;
     private String plate;
-    private String card;
-    private String qr;
-    private LocalDateTime entry_date;
-    private LocalDateTime exit_date;
+    //private String card;
+    //private String qr;
+    //private LocalDateTime entry_date;
+    //private LocalDateTime exit_date;
     private Boolean is_4r;
-    private Integer status;
+    //private Integer status;
 }

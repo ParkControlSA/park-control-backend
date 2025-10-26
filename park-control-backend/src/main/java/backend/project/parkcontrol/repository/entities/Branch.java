@@ -34,6 +34,12 @@ public class Branch {
     @Column(name = "4r_capacity")
     private Integer capacity_4r;
 
+    @Column(name = "2r_ocupation")
+    private Integer ocupation_2r;
+
+    @Column(name = "4r_ocupation")
+    private Integer ocupation_4r;
+
     // relationships (kept as foreign key ids to respect original schema)
 
 }

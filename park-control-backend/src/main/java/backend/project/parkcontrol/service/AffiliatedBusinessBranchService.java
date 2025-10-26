@@ -22,50 +22,52 @@ public class AffiliatedBusinessBranchService {
 
     public List<AffiliatedBusinessBranch> getById_affiliated_business(Integer id){
         List<AffiliatedBusinessBranch> list = affiliatedbusinessbranchCrud.findById_affiliated_business(id);
-        if(list.isEmpty()) throw new backend.project.parkcontrol.exception.BusinessException(org.springframework.http.HttpStatus.NOT_FOUND, "Not found");
         return list;
     }
 
-
     public List<AffiliatedBusinessBranch> getById_branch(Integer id){
         List<AffiliatedBusinessBranch> list = affiliatedbusinessbranchCrud.findById_branch(id);
-        if(list.isEmpty()) throw new backend.project.parkcontrol.exception.BusinessException(org.springframework.http.HttpStatus.NOT_FOUND, "Not found");
         return list;
     }
 
     public List<AffiliatedBusinessBranch> getAllAffiliatedBusinessBranchList(){
         List<AffiliatedBusinessBranch> list = affiliatedbusinessbranchCrud.findAll();
-        if(list.isEmpty()) throw new BusinessException(HttpStatus.NOT_FOUND, "No records");
         return list;
     }
 
     public AffiliatedBusinessBranch getAffiliatedBusinessBranchById(Integer id){
         Optional<AffiliatedBusinessBranch> optional = affiliatedbusinessbranchCrud.findById(id);
-        if(optional.isEmpty()) throw new BusinessException(HttpStatus.NOT_FOUND, "AffiliatedBusinessBranch not found");
         return optional.get();
     }
 
     public ResponseSuccessfullyDto deleteAffiliatedBusinessBranch(Integer id){
         AffiliatedBusinessBranch entity = getAffiliatedBusinessBranchById(id);
         affiliatedbusinessbranchCrud.delete(entity);
-        return ResponseSuccessfullyDto.builder().code(HttpStatus.ACCEPTED).message("Registro eliminado con Exito").build();
+        return ResponseSuccessfullyDto.builder().code(HttpStatus.OK).message("Registro eliminado con Exito").build();
     }
 
     public ResponseSuccessfullyDto createAffiliatedBusinessBranch(NewAffiliatedBusinessBranchDto dto){
         AffiliatedBusinessBranch e = new AffiliatedBusinessBranch();
+        validateAffiliatedBusinessBranch(dto.getId_affiliated_business(),dto.getId_branch());
         e.setAffiliatedBusiness(affiliatedBusinessService.getAffiliatedBusinessById(dto.getId_affiliated_business()));
         e.setBranch(branchService.getBranchById(dto.getId_branch()));
         affiliatedbusinessbranchCrud.save(e);
         return ResponseSuccessfullyDto.builder().code(HttpStatus.CREATED).message("Registro creado con Exito").build();
     }
 
+    private void validateAffiliatedBusinessBranch(Integer idAffiliatedBusiness, Integer idBranch) {
+        if(!affiliatedbusinessbranchCrud.findById_branchId_affiliated_business(idBranch, idAffiliatedBusiness).isEmpty()){
+            throw new BusinessException(HttpStatus.BAD_REQUEST,
+                    "El comercio yá está afiliado a la Sucursal");
+        }
+    }
+
     public ResponseSuccessfullyDto updateAffiliatedBusinessBranch(AffiliatedBusinessBranchDto dto){
         AffiliatedBusinessBranch existing = getAffiliatedBusinessBranchById(dto.getId());
         existing.setAffiliatedBusiness(affiliatedBusinessService.getAffiliatedBusinessById(dto.getId_affiliated_business()));
         existing.setBranch(branchService.getBranchById(dto.getId_branch()));
-
         affiliatedbusinessbranchCrud.save(existing);
-        return ResponseSuccessfullyDto.builder().code(HttpStatus.ACCEPTED).message("Registro actualizado con Exito").build();
+        return ResponseSuccessfullyDto.builder().code(HttpStatus.OK).message("Registro actualizado con Exito").build();
     }
 
     public ResponseSuccessfullyDto getAffiliatedBusinessBranch(Integer id){

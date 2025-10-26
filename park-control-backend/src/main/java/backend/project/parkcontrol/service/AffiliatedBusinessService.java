@@ -20,6 +20,7 @@ import java.util.*;
 public class AffiliatedBusinessService {
     private final AffiliatedBusinessCrud affiliatedbusinessCrud;
     private final UserCrud userCrud;
+    private final ValidationService validationService;
 
     // ==============================
     // GETTERS
@@ -28,7 +29,6 @@ public class AffiliatedBusinessService {
     // FK helper: find by id_user
     public List<AffiliatedBusiness> getById_user(Integer id) {
         List<AffiliatedBusiness> list = affiliatedbusinessCrud.findById_user(id);
-        if (list.isEmpty()) throw new BusinessException(HttpStatus.NOT_FOUND, "Not found");
         return list;
     }
 
@@ -39,8 +39,6 @@ public class AffiliatedBusinessService {
 
     public AffiliatedBusiness getAffiliatedBusinessById(Integer id) {
         Optional<AffiliatedBusiness> optional = affiliatedbusinessCrud.findById(id);
-        if (optional.isEmpty())
-            throw new BusinessException(HttpStatus.NOT_FOUND, "AffiliatedBusiness not found");
         return optional.get();
     }
 
@@ -52,7 +50,7 @@ public class AffiliatedBusinessService {
         AffiliatedBusiness entity = getAffiliatedBusinessById(id);
         affiliatedbusinessCrud.delete(entity);
         return ResponseSuccessfullyDto.builder()
-                .code(HttpStatus.ACCEPTED)
+                .code(HttpStatus.OK)
                 .message("Registro eliminado con Éxito")
                 .build();
     }
@@ -60,6 +58,7 @@ public class AffiliatedBusinessService {
     public ResponseSuccessfullyDto createAffiliatedBusiness(NewAffiliatedBusinessDto dto) {
         AffiliatedBusiness e = new AffiliatedBusiness();
         e.setBusiness_name(dto.getBusiness_name());
+        validationService.validatePositiveNumber(dto.getGranted_hours(), "Horas Otorgadas");
         e.setGranted_hours(dto.getGranted_hours());
         e.setUser(userCrud.findById(dto.getId_user()).orElseThrow(
                 () -> new BusinessException(HttpStatus.NOT_FOUND, "User not found")));
@@ -75,6 +74,7 @@ public class AffiliatedBusinessService {
     public ResponseSuccessfullyDto updateAffiliatedBusiness(AffiliatedBusinessDto dto) {
         AffiliatedBusiness existing = getAffiliatedBusinessById(dto.getId());
         existing.setBusiness_name(dto.getBusiness_name());
+        validationService.validatePositiveNumber(dto.getGranted_hours(), "Horas Otorgadas");
         existing.setGranted_hours(dto.getGranted_hours());
         existing.setUser(userCrud.findById(dto.getId_user()).orElseThrow(
                 () -> new BusinessException(HttpStatus.NOT_FOUND, "User not found")));
@@ -82,7 +82,7 @@ public class AffiliatedBusinessService {
         affiliatedbusinessCrud.save(existing);
 
         return ResponseSuccessfullyDto.builder()
-                .code(HttpStatus.ACCEPTED)
+                .code(HttpStatus.OK)
                 .message("Registro actualizado con Éxito")
                 .build();
     }

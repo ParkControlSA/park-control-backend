@@ -57,7 +57,7 @@ public class BranchTemporaryPermitService {
         BranchTemporaryPermit entity = getBranchTemporaryPermitById(id);
         branchtemporarypermitCrud.delete(entity);
         return ResponseSuccessfullyDto.builder()
-                .code(HttpStatus.ACCEPTED)
+                .code(HttpStatus.OK)
                 .message("Registro eliminado con Éxito")
                 .build();
     }
@@ -81,7 +81,7 @@ public class BranchTemporaryPermitService {
         branchtemporarypermitCrud.save(existing);
 
         return ResponseSuccessfullyDto.builder()
-                .code(HttpStatus.ACCEPTED)
+                .code(HttpStatus.OK)
                 .message("Registro actualizado con Éxito")
                 .build();
     }

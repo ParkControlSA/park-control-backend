@@ -8,6 +8,8 @@ import backend.project.parkcontrol.repository.crud.SubscriptionPlanCrud;
 import backend.project.parkcontrol.repository.entities.SubscriptionPlan;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import java.util.*;
@@ -43,13 +45,26 @@ public class SubscriptionPlanService {
         e.setDaily_hours(dto.getDaily_hours());
         e.setTotal_discount(dto.getTotal_discount());
         e.setAnnual_discount(dto.getAnnual_discount());
+        try {
+            subscriptionPlanCrud.save(e);
 
-        subscriptionPlanCrud.save(e);
-
-        return ResponseSuccessfullyDto.builder()
-                .code(HttpStatus.CREATED)
-                .message("Registro creado con Éxito")
-                .build();
+            return ResponseSuccessfullyDto.builder()
+                    .code(HttpStatus.CREATED)
+                    .message("Registro creado con Éxito")
+                    .build();
+        }catch (DataIntegrityViolationException ex) {
+            Throwable root = ExceptionUtils.getRootCause(ex);
+            if (root != null && root.getMessage() != null) {
+                String msg = root.getMessage();
+                if (msg.contains("45000")) {
+                    throw new BusinessException(HttpStatus.BAD_REQUEST, msg);
+                }
+            }
+            throw new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al actualizar el plan de suscripción");
+        } catch (Exception ex) {
+            // Cualquier otra excepción no prevista
+            throw new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR, "Error inesperado: " + ex.getMessage());
+        }
     }
 
     public ResponseSuccessfullyDto updateSubscriptionPlan(SubscriptionPlanDto dto) {
@@ -60,19 +75,31 @@ public class SubscriptionPlanService {
         existing.setTotal_discount(dto.getTotal_discount());
         existing.setAnnual_discount(dto.getAnnual_discount());
 
-        subscriptionPlanCrud.save(existing);
+        try {
+            subscriptionPlanCrud.save(existing);
 
-        return ResponseSuccessfullyDto.builder()
-                .code(HttpStatus.ACCEPTED)
-                .message("Registro actualizado con Éxito")
-                .build();
+            return ResponseSuccessfullyDto.builder()
+                    .code(HttpStatus.OK)
+                    .message("Registro actualizado con Éxito")
+                    .build();
+        } catch (Exception ex) {
+            // Cualquier otra excepción no prevista
+            Throwable root = ExceptionUtils.getRootCause(ex);
+            if (root != null && root.getMessage() != null) {
+                String msg = root.getMessage();
+                throw new BusinessException(HttpStatus.BAD_REQUEST, msg);
+            }else{
+                throw new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR, "Error inesperado: " + ex.getMessage());
+            }
+
+        }
     }
 
     public ResponseSuccessfullyDto deleteSubscriptionPlan(Integer id) {
         SubscriptionPlan entity = getSubscriptionPlanById(id);
         subscriptionPlanCrud.delete(entity);
         return ResponseSuccessfullyDto.builder()
-                .code(HttpStatus.ACCEPTED)
+                .code(HttpStatus.OK)
                 .message("Registro eliminado con Éxito")
                 .build();
     }

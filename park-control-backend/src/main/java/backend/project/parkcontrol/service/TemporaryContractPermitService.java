@@ -122,7 +122,7 @@ public class TemporaryContractPermitService {
         temporarycontractpermitCrud.save(existing);
 
         return ResponseSuccessfullyDto.builder()
-                .code(HttpStatus.ACCEPTED)
+                .code(HttpStatus.OK)
                 .message("Registro actualizado con Éxito")
                 .build();
     }
@@ -132,7 +132,7 @@ public class TemporaryContractPermitService {
         temporarycontractpermitCrud.delete(entity);
 
         return ResponseSuccessfullyDto.builder()
-                .code(HttpStatus.ACCEPTED)
+                .code(HttpStatus.OK)
                 .message("Registro eliminado con Éxito")
                 .build();
     }

@@ -61,6 +61,20 @@ public class UserController implements UserApi {
     }
 
     @Override
+    public ResponseEntity<ResponseSuccessfullyDto> recoveryPassword(RecoveryPasswordDto recoveryPasswordDto, Integer userId) {
+        log.info("POST user/recovery_password");
+        ResponseSuccessfullyDto responseSuccessfullyDto = userService.recoveryPassword(recoveryPasswordDto,userId);
+        return new ResponseEntity<>(responseSuccessfullyDto, responseSuccessfullyDto.getCode());
+    }
+
+    @Override
+    public ResponseEntity<ResponseSuccessfullyDto> userForgotPassword(UserForgotPasswordDto userForgotPasswordDto) {
+        log.info("POST user/forgot_password");
+        ResponseSuccessfullyDto responseSuccessfullyDto = userService.userForgotPassword(userForgotPasswordDto);
+        return new ResponseEntity<>(responseSuccessfullyDto,responseSuccessfullyDto.getCode());
+    }
+
+    @Override
     public ResponseEntity<ResponseSuccessfullyDto> login(LoginDto loginDto) {
         log.info("POST user/login");
         ResponseSuccessfullyDto responseSuccessfullyDto = userService.login(loginDto);
