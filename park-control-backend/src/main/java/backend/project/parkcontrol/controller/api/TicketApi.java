@@ -42,6 +42,4 @@ public interface TicketApi {
     @PutMapping("/card/{card}")
     ResponseEntity<ResponseSuccessfullyDto> closeTicketCard(@PathVariable String card);
 
-    @PutMapping("/qr/{qr}")
-    ResponseEntity<ResponseSuccessfullyDto> closeTicketQr(@PathVariable String qr);
 }
