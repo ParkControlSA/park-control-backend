@@ -23,7 +23,7 @@ public interface UserApi {
     ResponseEntity<ResponseSuccessfullyDto> updateAuthStatus(@RequestBody UpdateAuthStatusDto updateAuthStatusDto, @RequestHeader(value = "user") Integer userId);
 
     @PutMapping
-    ResponseEntity<ResponseSuccessfullyDto> updateUser(@RequestBody UserDto userDto);
+    ResponseEntity<ResponseSuccessfullyDto> updateUser(@RequestBody UserUpdateDto userDto);
 
     @DeleteMapping("/{id}")
     ResponseEntity<ResponseSuccessfullyDto> deleteUser(@PathVariable Integer id);

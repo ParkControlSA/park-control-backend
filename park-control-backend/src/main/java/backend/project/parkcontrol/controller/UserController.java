@@ -26,7 +26,7 @@ public class UserController implements UserApi {
     }
 
     @Override
-    public ResponseEntity<ResponseSuccessfullyDto> updateUser(UserDto userDto) {
+    public ResponseEntity<ResponseSuccessfullyDto> updateUser(UserUpdateDto userDto) {
         log.info("PUT /user -- update user");
         ResponseSuccessfullyDto response = userService.updateUser(userDto);
         return new ResponseEntity<>(response, response.getCode());
