@@ -22,6 +22,8 @@ public class ContractService {
     private final ContractCrud contractCrud;
     private final UserCrud userCrud;
     private final SubscriptionPlanService subscriptionPlanService;
+    private static final Integer CONTRACT_LIMIT_MONTHS = 12;
+    private final ValidationService validationService;
 
     // ==============================
     // GETTERS
@@ -67,16 +69,25 @@ public class ContractService {
         LocalDateTime hoy = LocalDateTime.now();
         e.setStart_date(hoy);
         e.setEnd_date(hoy.plusMonths(dto.getMonths()));
+        verifyMonths(dto.getMonths());
         e.setMonths(dto.getMonths());
         e.setIs_anual(dto.getIs_anual());
-        e.setActive(true);
-        contractCrud.save(e);
-//  CREAR CONTRACT PAYMENT
+        e.setActive(dto.getMonths() == CONTRACT_LIMIT_MONTHS);
+        Contract saved = contractCrud.save(e);
         //CREAR MUCHOS HISTORY CONTRACT
         return ResponseSuccessfullyDto.builder()
                 .code(HttpStatus.CREATED)
+                .body(Map.of("id", saved.getId()))
                 .message("Registro creado con Éxito")
                 .build();
+    }
+
+    private void verifyMonths(Integer months) {
+        validationService.validatePositiveNumber(months, "meses");
+        if (months>CONTRACT_LIMIT_MONTHS){
+            throw new BusinessException(HttpStatus.BAD_REQUEST,
+                    "Solamente es posible adquirir un contrato anualmente (12 meses)");
+        }
     }
 
     public ResponseSuccessfullyDto updateContract(ContractDto dto) {
