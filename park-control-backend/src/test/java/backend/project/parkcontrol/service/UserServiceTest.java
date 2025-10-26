@@ -17,10 +17,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -63,10 +60,21 @@ class UserServiceTest {
         NewUserDto newUserDto = GENERATOR.nextObject(NewUserDto.class);
         String hashedPassword = "hashedPassword123";
         
+        // Create the expected saved user with ID
+        UserEntity savedUser = new UserEntity();
+        savedUser.setId(1);
+        savedUser.setName(newUserDto.getNombre());
+        savedUser.setEmail(newUserDto.getEmail());
+        savedUser.setPhone(newUserDto.getTelefono());
+        savedUser.setUsername(newUserDto.getUsername());
+        savedUser.setPassword(hashedPassword);
+        savedUser.setAuthentication(Boolean.TRUE);
+        savedUser.setRol(role);
+
         // Mock the dependencies
         when(rolService.getRoleById(newUserDto.getRol())).thenReturn(role);
         when(utils.hashPassword(newUserDto.getPassword())).thenReturn(hashedPassword);
-        when(userCrud.save(any(UserEntity.class))).thenReturn(new UserEntity());
+        when(userCrud.save(any(UserEntity.class))).thenReturn(savedUser);
 
         // Act
         ResponseSuccessfullyDto result = userService.createUser(newUserDto);
@@ -74,6 +82,7 @@ class UserServiceTest {
         // Assert
         assertThat(result.getCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(result.getMessage()).isEqualTo("El usuario fué creado correctamente");
+        assertThat(((Map<String, Integer>) result.getBody()).get("id")).isEqualTo(1);
     }
 
     @Test
@@ -91,7 +100,7 @@ class UserServiceTest {
         ResponseSuccessfullyDto result = userService.updateUser(userDto);
 
         // Assert
-        assertThat(result.getCode()).isEqualTo(HttpStatus.ACCEPTED);
+        assertThat(result.getCode()).isEqualTo(HttpStatus.OK);
         assertThat(result.getMessage()).isEqualTo("Usuario actualizado correctamente");
         verify(userCrud).save(any(UserEntity.class));
     }
@@ -108,7 +117,7 @@ class UserServiceTest {
         ResponseSuccessfullyDto result = userService.deleteUser(userId);
 
         // Assert
-        assertThat(result.getCode()).isEqualTo(HttpStatus.ACCEPTED);
+        assertThat(result.getCode()).isEqualTo(HttpStatus.OK);
         assertThat(result.getMessage()).isEqualTo("Usuario eliminado correctamente");
         verify(userCrud).delete(user);
     }
@@ -192,8 +201,10 @@ class UserServiceTest {
             GENERATOR.nextObject(UserEntity.class),
             GENERATOR.nextObject(UserEntity.class)
         );
-        
-        when(userCrud.findById_role(rolId)).thenReturn(users);
+
+        Optional<List<UserEntity>> optionalUserEntityList = Optional.of(users);
+
+        when(userCrud.findById_role(rolId)).thenReturn(optionalUserEntityList);
 
         // Act
         List<UserEntity> result = userService.getUsersByRolId(rolId);
@@ -212,8 +223,10 @@ class UserServiceTest {
             GENERATOR.nextObject(UserEntity.class),
             GENERATOR.nextObject(UserEntity.class)
         );
+
+        Optional<List<UserEntity>> optionalUserEntityList = Optional.of(users);
         
-        when(userCrud.findById_role(rolId)).thenReturn(users);
+        when(userCrud.findById_role(rolId)).thenReturn(optionalUserEntityList);
 
         // Act
         ResponseSuccessfullyDto result = userService.getUsersByRolIdResponse(rolId);
@@ -240,7 +253,7 @@ class UserServiceTest {
         ResponseSuccessfullyDto result = userService.login(loginDto);
 
         // Assert
-        assertThat(result.getCode()).isEqualTo(HttpStatus.ACCEPTED);
+        assertThat(result.getCode()).isEqualTo(HttpStatus.OK);
         assertThat(result.getMessage()).isEqualTo("Inicio de sesión exitoso");
         assertThat(result.getBody()).isInstanceOf(UserInfoDto.class);
         
@@ -267,7 +280,7 @@ class UserServiceTest {
         ResponseSuccessfullyDto result = userService.login(loginDto);
 
         // Assert
-        assertThat(result.getCode()).isEqualTo(HttpStatus.ACCEPTED);
+        assertThat(result.getCode()).isEqualTo(HttpStatus.OK);
         assertThat(result.getMessage()).isEqualTo("Se ha enviado un código a su correo electrónico, ingresarlo para confirmar el inicio de swsión");
         assertThat(result.getBody()).isInstanceOf(UserInfoDto.class);
         
