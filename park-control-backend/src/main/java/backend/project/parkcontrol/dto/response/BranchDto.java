@@ -1,14 +1,14 @@
 package backend.project.parkcontrol.dto.response;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalTime;
 
 @Getter
 @Setter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class BranchDto {
     private Integer id;
     private String name;
