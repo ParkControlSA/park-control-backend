@@ -94,13 +94,12 @@ public class TicketService {
         e.setBranch(branchService.getBranchById(dto.getId_branch()));
         e.setPlate(dto.getPlate());
         e.setEntry_date(LocalDateTime.now());
-        //e.setExit_date(dto.getExit_date());
         e.setIs_4r(dto.getIs_4r());
         e.setStatus(TicketStatus.ENTRADA_REGISTRADA.getValue());
         Ticket savedTicket = ticketCrud.save(e);
         //AGREGAMOS LOS CAMPOS FALTANTES
-        savedTicket.setQr(generateQrBase64(savedTicket.getId()+savedTicket.getPlate()));
         savedTicket.setCard(generateCardValue(savedTicket.getId()+savedTicket.getPlate()));
+        savedTicket.setQr(generateQrBase64(savedTicket.getCard()));
         ticketCrud.save(savedTicket);
         return ResponseSuccessfullyDto.builder()
                 .code(HttpStatus.CREATED)
@@ -110,7 +109,7 @@ public class TicketService {
     }
 
     private void checkPlate(NewTicketDto dto) {
-        if (!ticketCrud.findByPlateStatus(dto.getPlate(), 1).isEmpty() || !ticketCrud.findByPlateStatus(dto.getPlate(), 2).isEmpty()){
+        if (!ticketCrud.findByPlateStatus(dto.getPlate(), 1).isEmpty()){
             throw new BusinessException(HttpStatus.BAD_REQUEST,
                     "El vehículo ya se encuentra registrado dentro de un Parqueo.");
         }
@@ -147,8 +146,6 @@ public class TicketService {
             ticket = ticketCrud.findByPlateStatus(data,TicketStatus.ENTRADA_REGISTRADA.getValue()).getFirst();
         } else if (typeData.equals(2)) {//TARJETA
             ticket = ticketCrud.findByCard(data).getFirst();
-        } else if (typeData.equals(3)) {//QR
-            ticket = ticketCrud.findByQr(data).getFirst();
         } else {
             ticket = ticketCrud.findById(Integer.valueOf(data)).get();
         }
@@ -159,6 +156,7 @@ public class TicketService {
         }
 
         ticket.setStatus(TicketStatus.SALIDA_REGISTRADA.getValue());
+        ticket.setExit_date(LocalDateTime.now());
         ticketCrud.save(ticket);
         updateAvailability(ticket);
         return ResponseSuccessfullyDto.builder()

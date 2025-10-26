@@ -79,10 +79,4 @@ public class TicketController implements TicketApi {
         return ResponseEntity.status(202).body(ticketService.closeTicket(card,2));
     }
 
-    @Override
-    public ResponseEntity<ResponseSuccessfullyDto> closeTicketQr(String qr) {
-        log.info("PUT /ticket/qr/{}", qr);
-        return ResponseEntity.status(202).body(ticketService.closeTicket(qr,3));
-    }
-
 }

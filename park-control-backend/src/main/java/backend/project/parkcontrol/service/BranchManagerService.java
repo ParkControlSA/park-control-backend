@@ -66,6 +66,10 @@ public class BranchManagerService {
             throw new BusinessException(HttpStatus.BAD_REQUEST,
                     "El usuario ya está asignado como encargado de esta sucursal");
         }
+        if (!branchManagerCrud.findById_user(idUser).isEmpty()) {
+            throw new BusinessException(HttpStatus.BAD_REQUEST,
+                    "El usuario ya está asignado a una sucursal distinta");
+        }
     }
 
     public ResponseSuccessfullyDto updateBranchManager(BranchManagerDto dto) {
