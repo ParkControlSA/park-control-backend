@@ -11,10 +11,10 @@ import java.time.LocalDateTime;
 @Builder
 public class NewContractPaymentDto {
     private Integer id_contract;
-    private Double subtotal;
-    private Double monthly_discount;
-    private Double annual_discount;
-    private Double total;
-    private LocalDateTime date;
+    //private Double subtotal;
+    //private Double monthly_discount;
+    //private Double annual_discount;
+    //private Double total;
+    //private LocalDateTime date;
     private Integer payment_method;
 }

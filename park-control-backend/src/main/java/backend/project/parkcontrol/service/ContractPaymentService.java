@@ -5,12 +5,17 @@ import backend.project.parkcontrol.dto.response.ContractPaymentDto;
 import backend.project.parkcontrol.dto.response.ResponseSuccessfullyDto;
 import backend.project.parkcontrol.exception.BusinessException;
 import backend.project.parkcontrol.repository.crud.ContractPaymentCrud;
+import backend.project.parkcontrol.repository.entities.Contract;
 import backend.project.parkcontrol.repository.entities.ContractPayment;
+import backend.project.parkcontrol.repository.entities.RateAssignment;
+import backend.project.parkcontrol.repository.entities.SubscriptionPlan;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 
 @Slf4j
@@ -19,26 +24,26 @@ import java.util.*;
 public class ContractPaymentService {
     private final ContractPaymentCrud contractpaymentCrud;
     private final ContractService contractService;
-
+    private final RateAssignmentService rateAssignmentService;
+    private final SubscriptionPlanService subscriptionPlanService;
+    private static final Integer ID_SUCURSAL_BASE = 1;
+    private static final Integer MONTHS_ANUAL_PLAN = 12;
     // ==============================
     // GETTERS
     // ==============================
 
     public List<ContractPayment> getById_contract(Integer id) {
         List<ContractPayment> list = contractpaymentCrud.findById_contract(id);
-        if (list.isEmpty()) throw new BusinessException(HttpStatus.NOT_FOUND, "Not found");
         return list;
     }
 
     public List<ContractPayment> getAllContractPaymentList() {
         List<ContractPayment> list = contractpaymentCrud.findAll();
-        if (list.isEmpty()) throw new BusinessException(HttpStatus.NOT_FOUND, "No records");
         return list;
     }
 
     public ContractPayment getContractPaymentById(Integer id) {
         Optional<ContractPayment> optional = contractpaymentCrud.findById(id);
-        if (optional.isEmpty()) throw new BusinessException(HttpStatus.NOT_FOUND, "ContractPayment not found");
         return optional.get();
     }
 
@@ -57,12 +62,23 @@ public class ContractPaymentService {
 
     public ResponseSuccessfullyDto createContractPayment(NewContractPaymentDto dto) {
         ContractPayment e = new ContractPayment();
-        e.setContract(contractService.getContractById(dto.getId_contract()));
-        e.setSubtotal(dto.getSubtotal());
-        e.setMonthly_discount(dto.getMonthly_discount());
-        e.setAnnual_discount(dto.getAnnual_discount());
-        e.setTotal(dto.getTotal());
-        e.setDate(dto.getDate());
+        Contract contract = contractService.getContractById(dto.getId_contract());
+        RateAssignment rateAssignment = rateAssignmentService.getRateAssignamentById_branchIsActive(ID_SUCURSAL_BASE).getFirst();
+        SubscriptionPlan subscriptionPlan = contract.getSubscriptionPlan();
+        Double pagoSinDescuentos = contract.getMonths()*rateAssignment.getHourly_rate();
+        Double descuentoMensual = pagoSinDescuentos*(subscriptionPlan.getTotal_discount()/100);
+        e.setContract(contract);
+        e.setSubtotal(pagoSinDescuentos);
+        e.setMonthly_discount(descuentoMensual);
+        if (contract.getIs_anual()) {
+            Double descuentoAnual = pagoSinDescuentos*((subscriptionPlan.getAnnual_discount()/MONTHS_ANUAL_PLAN)/100);
+            e.setAnnual_discount(descuentoAnual);
+            e.setTotal(pagoSinDescuentos-descuentoMensual-descuentoAnual);
+        }else {
+            e.setAnnual_discount(0.0);
+            e.setTotal(pagoSinDescuentos-descuentoMensual);
+        }
+        e.setDate(LocalDateTime.now(ZoneId.of("America/Guatemala")));
         e.setPayment_method(dto.getPayment_method());
         contractpaymentCrud.save(e);
 
