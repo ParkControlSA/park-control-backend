@@ -33,6 +33,7 @@ public class TicketService {
     private final TicketCrud ticketCrud;
     private final BranchService branchService;
     private final BranchCrud branchCrud;
+    private final TicketUsageService ticketUsageService;
 
     // ==============================
     // GETTERS
@@ -102,6 +103,8 @@ public class TicketService {
         savedTicket.setCard(generateCardValue(savedTicket.getId()+savedTicket.getPlate()));
         savedTicket.setQr(generateQrBase64(savedTicket.getCard()));
         ticketCrud.save(savedTicket);
+        //EDITAMOS EL TICKET_USAGE
+        ticketUsageService.updateRateAssignament(savedTicket);
         return ResponseSuccessfullyDto.builder()
                 .code(HttpStatus.CREATED)
                 .message("Registro creado con éxito")

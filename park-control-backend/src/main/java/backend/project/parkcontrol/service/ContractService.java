@@ -74,8 +74,8 @@ public class ContractService {
         e.setEnd_date(hoy.plusMonths(dto.getMonths()));
         verifyMonths(dto.getMonths());
         e.setMonths(dto.getMonths());
-        e.setIs_anual(dto.getIs_anual());
-        e.setActive(dto.getMonths() == CONTRACT_LIMIT_MONTHS);
+        e.setIs_anual(dto.getMonths() == CONTRACT_LIMIT_MONTHS);
+        e.setActive(Boolean.TRUE);
         Contract saved = contractCrud.save(e);
         //Crea los historiales del contrato
         contractHistoryService.createContractHistory(saved);
