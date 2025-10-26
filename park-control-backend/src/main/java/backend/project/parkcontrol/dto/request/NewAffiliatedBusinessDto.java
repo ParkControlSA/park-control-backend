@@ -1,12 +1,12 @@
 package backend.project.parkcontrol.dto.request;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class NewAffiliatedBusinessDto {
     private String business_name;
     private Integer granted_hours;
