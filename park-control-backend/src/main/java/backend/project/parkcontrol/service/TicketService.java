@@ -23,6 +23,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 
 @Slf4j
@@ -93,7 +94,7 @@ public class TicketService {
         Ticket e = new Ticket();
         e.setBranch(branchService.getBranchById(dto.getId_branch()));
         e.setPlate(dto.getPlate());
-        e.setEntry_date(LocalDateTime.now());
+        e.setEntry_date(LocalDateTime.now(ZoneId.of("America/Guatemala")));
         e.setIs_4r(dto.getIs_4r());
         e.setStatus(TicketStatus.ENTRADA_REGISTRADA.getValue());
         Ticket savedTicket = ticketCrud.save(e);
@@ -156,7 +157,7 @@ public class TicketService {
         }
 
         ticket.setStatus(TicketStatus.SALIDA_REGISTRADA.getValue());
-        ticket.setExit_date(LocalDateTime.now());
+        ticket.setExit_date(LocalDateTime.now(ZoneId.of("America/Guatemala")));
         ticketCrud.save(ticket);
         updateAvailability(ticket);
         return ResponseSuccessfullyDto.builder()
