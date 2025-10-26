@@ -1,0 +1,500 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="9c619014-eb55-44e4-82fc-67cbab91cd1b" name="Changes" comment="delte unnecessary file.">
+      <change beforePath="$PROJECT_DIR$/.gitattributes" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.mvn/wrapper/maven-wrapper.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mvnw" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mvnw.cmd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/ParkcontrolApplication.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/config/SecurityConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/controller/AffiliatedBusinessBranchController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/controller/AffiliatedBusinessController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/controller/BranchController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/controller/BranchManagerController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/controller/BranchTemporaryPermitController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/controller/ContractController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/controller/ContractHistoryController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/controller/ContractPaymentController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/controller/IncidentController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/controller/LicensePlateBlockRequestController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/controller/RateAssignmentController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/controller/RoleController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/controller/SubscriptionPlanController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/controller/TemporaryContractPermitController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/controller/TestController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/controller/TicketBusinessUsageController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/controller/TicketController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/controller/TicketPaymentController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/controller/TicketUsageController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/controller/UserController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/controller/ValidationCodeController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/controller/api/AffiliateCommerceApi.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/controller/api/AffiliatedBusinessApi.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/controller/api/AffiliatedBusinessBranchApi.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/controller/api/BranchApi.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/controller/api/BranchManagerApi.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/controller/api/BranchTemporaryPermitApi.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/controller/api/ContractApi.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/controller/api/ContractHistoryApi.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/controller/api/ContractPaymentApi.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/controller/api/IncidentApi.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/controller/api/LicensePlateBlockRequestApi.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/controller/api/RateAssignmentApi.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/controller/api/RolApi.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/controller/api/SubscriptionPlanApi.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/controller/api/TemporaryContractPermitApi.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/controller/api/TicketApi.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/controller/api/TicketBusinessUsageApi.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/controller/api/TicketPaymentApi.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/controller/api/TicketUsageApi.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/controller/api/UserApi.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/controller/api/ValidationCodeApi.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/dto/request/CreateAffiliateCommerceDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/dto/request/LoginDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/dto/request/NewAffiliatedBusinessBranchDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/dto/request/NewAffiliatedBusinessDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/dto/request/NewBranchDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/dto/request/NewBranchManagerDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/dto/request/NewBranchTemporaryPermitDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/dto/request/NewContractDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/dto/request/NewContractHistoryDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/dto/request/NewContractPaymentDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/dto/request/NewIncidentDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/dto/request/NewLicensePlateBlockRequestDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/dto/request/NewRateAssignmentDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/dto/request/NewRoleDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/dto/request/NewSubscriptionPlanDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/dto/request/NewTemporaryContractPermitDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/dto/request/NewTicketBusinessUsageDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/dto/request/NewTicketDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/dto/request/NewTicketPaymentDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/dto/request/NewTicketUsageDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/dto/request/NewUserDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/dto/request/RecoveryPasswordDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/dto/request/UpdateAuthStatusDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/dto/request/UserForgotPasswordDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/dto/request/UserUpdateDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/dto/request/ValidateCodeDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/dto/response/AffiliatedBusinessBranchDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/dto/response/AffiliatedBusinessDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/dto/response/BranchDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/dto/response/BranchManagerDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/dto/response/BranchTemporaryPermitDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/dto/response/ContractDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/dto/response/ContractHistoryDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/dto/response/ContractPaymentDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/dto/response/IncidentDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/dto/response/LicensePlateBlockRequestDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/dto/response/RateAssignmentDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/dto/response/ResponseSuccessfullyDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/dto/response/RoleInfoDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/dto/response/SubscriptionPlanDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/dto/response/TemporaryContractPermitDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/dto/response/TicketBusinessUsageDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/dto/response/TicketDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/dto/response/TicketPaymentDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/dto/response/TicketUsageDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/dto/response/UserDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/dto/response/UserInfoDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/dto/response/ValidationCodeDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/enums/TicketStatus.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/exception/BusinessException.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/exception/ControllerExceptionHandler.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/exception/ErrorDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/mapper/AffiliateCommerceMapper.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/repository/crud/AffiliateCommerceCrud.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/repository/crud/AffiliatedBusinessBranchCrud.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/repository/crud/AffiliatedBusinessCrud.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/repository/crud/BranchCrud.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/repository/crud/BranchManagerCrud.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/repository/crud/BranchTemporaryPermitCrud.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/repository/crud/ContractCrud.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/repository/crud/ContractHistoryCrud.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/repository/crud/ContractPaymentCrud.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/repository/crud/IncidentCrud.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/repository/crud/LicensePlateBlockRequestCrud.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/repository/crud/RateAssignmentCrud.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/repository/crud/RolCrud.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/repository/crud/SubscriptionPlanCrud.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/repository/crud/TemporaryContractPermitCrud.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/repository/crud/TicketBusinessUsageCrud.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/repository/crud/TicketCrud.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/repository/crud/TicketPaymentCrud.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/repository/crud/TicketUsageCrud.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/repository/crud/UserCrud.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/repository/crud/ValidationCodeCrud.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/repository/entities/AffiliateCommerceEntity.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/repository/entities/AffiliatedBusiness.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/repository/entities/AffiliatedBusinessBranch.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/repository/entities/Branch.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/repository/entities/BranchManager.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/repository/entities/BranchTemporaryPermit.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/repository/entities/Contract.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/repository/entities/ContractHistory.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/repository/entities/ContractPayment.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/repository/entities/Incident.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/repository/entities/LicensePlateBlockRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/repository/entities/RateAssignment.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/repository/entities/RoleEntity.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/repository/entities/SubscriptionPlan.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/repository/entities/TemporaryContractPermit.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/repository/entities/Ticket.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/repository/entities/TicketBusinessUsage.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/repository/entities/TicketPayment.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/repository/entities/TicketUsage.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/repository/entities/UserEntity.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/repository/entities/ValidationCode.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/service/AffiliatedBusinessBranchService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/service/AffiliatedBusinessService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/service/BranchManagerService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/service/BranchService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/service/BranchTemporaryPermitService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/service/ContractHistoryService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/service/ContractPaymentService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/service/ContractService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/service/EmailService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/service/IncidentService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/service/LicensePlateBlockRequestService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/service/RateAssignmentService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/service/RolService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/service/SubscriptionPlanService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/service/TemporaryContractPermitService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/service/TicketBusinessUsageService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/service/TicketPaymentService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/service/TicketService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/service/TicketUsageService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/service/TokenService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/service/UserService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/service/ValidationCodeService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/service/ValidationService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/utils/GeneralUtils.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/backend/project/parkcontrol/ParkcontrolApplicationTests.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/backend/project/parkcontrol/service/UserServiceTest.java" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Interface" />
+        <option value="JUnit5 Test Class" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Merge.Settings">
+    <option name="BRANCH" value="origin/main" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$/.." value="main" />
+        <entry key="$PROJECT_DIR$" value="main" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;Cristian-Archila1&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/ParkControlSA/park-control-backend.git&quot;,
+    &quot;accountId&quot;: &quot;34585946-e1d1-45d9-b2ce-2d66dad8e2ee&quot;
+  }
+}</component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHomeTypeForPersistence" value="WRAPPER" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 5
+}</component>
+  <component name="ProjectId" id="33ixKJ9TZojTLTsp2MwIpdMfsdl" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.ParkcontrolApplication.executor": "Run",
+    "JUnit.UserServiceTest.createUser.executor": "Run",
+    "JUnit.UserServiceTest.executor": "Run",
+    "JUnit.UserServiceTest.login_Successful_WithTwoFactorAuth.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit5",
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5": "",
+    "git-widget-placeholder": "feature/test",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "U:/Universidad/CICLO 2025/SEGUNDO SEMESTRE/AYD 1/PROYECTO FINAL AYD 1/park-control-backend",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.1954023"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="U:\Universidad\CICLO 2025\SEGUNDO SEMESTRE\AYD 1\PROYECTO FINAL AYD 1\park-control-backend\src\main\java\backend\project\parkcontrol" />
+    </key>
+    <key name="CreateTestDialog.Recents.Supers">
+      <recent name="" />
+    </key>
+    <key name="CreateTestDialog.RecentsKey">
+      <recent name="backend.project.parkcontrol.service" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="backend.project.parkcontrol.dto.request" />
+      <recent name="backend.project.parkcontrol.controller" />
+      <recent name="backend.project.parkcontrol.config" />
+      <recent name="backend.project.parkcontrol.service" />
+      <recent name="backend.project.parkcontrol.repository.crud" />
+    </key>
+  </component>
+  <component name="RunManager" selected="JUnit.UserServiceTest.createUser">
+    <configuration name="ParkcontrolApplication" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="backend.project.parkcontrol.ParkcontrolApplication" />
+      <module name="parkcontrol" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="UserServiceTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="parkcontrol" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="backend.project.parkcontrol.service.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="backend.project.parkcontrol.service" />
+      <option name="MAIN_CLASS_NAME" value="backend.project.parkcontrol.service.UserServiceTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="UserServiceTest.createUser" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="parkcontrol" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="backend.project.parkcontrol.service.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="backend.project.parkcontrol.service" />
+      <option name="MAIN_CLASS_NAME" value="backend.project.parkcontrol.service.UserServiceTest" />
+      <option name="METHOD_NAME" value="createUser" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="UserServiceTest.login_Successful_WithTwoFactorAuth" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="parkcontrol" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="backend.project.parkcontrol.service.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="backend.project.parkcontrol.service" />
+      <option name="MAIN_CLASS_NAME" value="backend.project.parkcontrol.service.UserServiceTest" />
+      <option name="METHOD_NAME" value="login_Successful_WithTwoFactorAuth" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="park-control-backend" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <module name="park-control-backend" />
+      <option name="filePath" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.UserServiceTest.login_Successful_WithTwoFactorAuth" />
+        <item itemvalue="JUnit.UserServiceTest.createUser" />
+        <item itemvalue="JUnit.UserServiceTest" />
+        <item itemvalue="JUnit.UserServiceTest.login_Successful_WithTwoFactorAuth" />
+        <item itemvalue="JUnit.UserServiceTest.createUser" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="9c619014-eb55-44e4-82fc-67cbab91cd1b" name="Changes" comment="" />
+      <created>1759813628327</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1759813628327</updated>
+    </task>
+    <task id="LOCAL-00001" summary="add test endpoint for test swagger.">
+      <option name="closed" value="true" />
+      <created>1759815344161</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1759815344161</updated>
+    </task>
+    <task id="LOCAL-00002" summary="add user service for create user service and login service.">
+      <option name="closed" value="true" />
+      <created>1760236260347</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1760236260347</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Add affiliate commerce service.">
+      <option name="closed" value="true" />
+      <created>1760589904389</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1760589904389</updated>
+    </task>
+    <task id="LOCAL-00004" summary="delete unnecessary services for affiliate commerce services.">
+      <option name="closed" value="true" />
+      <created>1760932822417</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1760932822417</updated>
+    </task>
+    <task id="LOCAL-00005" summary="delete unnecessary files.">
+      <option name="closed" value="true" />
+      <created>1760932879315</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1760932879315</updated>
+    </task>
+    <task id="LOCAL-00006" summary="changes in branch and affiliate business service.">
+      <option name="closed" value="true" />
+      <created>1760935428118</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1760935428118</updated>
+    </task>
+    <task id="LOCAL-00007" summary="changes in update auth status dto for update auth status service.">
+      <option name="closed" value="true" />
+      <created>1761000367651</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1761000367651</updated>
+    </task>
+    <task id="LOCAL-00008" summary="add recovery password service">
+      <option name="closed" value="true" />
+      <created>1761161715320</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1761161715320</updated>
+    </task>
+    <task id="LOCAL-00009" summary="merge from main">
+      <option name="closed" value="true" />
+      <created>1761162676735</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1761162676735</updated>
+    </task>
+    <task id="LOCAL-00010" summary="add test and changes in update user service">
+      <option name="closed" value="true" />
+      <created>1761443188915</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1761443188915</updated>
+    </task>
+    <task id="LOCAL-00011" summary="merge from main">
+      <option name="closed" value="true" />
+      <created>1761443444937</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1761443444937</updated>
+    </task>
+    <task id="LOCAL-00012" summary="changes in test.">
+      <option name="closed" value="true" />
+      <created>1761445085141</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1761445085141</updated>
+    </task>
+    <task id="LOCAL-00013" summary="update github workflow file">
+      <option name="closed" value="true" />
+      <created>1761445710837</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1761445710837</updated>
+    </task>
+    <task id="LOCAL-00014" summary="delte unnecessary file.">
+      <option name="closed" value="true" />
+      <created>1761447683607</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1761447683607</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
+    <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="add test endpoint for test swagger." />
+    <MESSAGE value="add user service for create user service and login service." />
+    <MESSAGE value="Add affiliate commerce service." />
+    <MESSAGE value="delete unnecessary services for affiliate commerce services." />
+    <MESSAGE value="delete unnecessary files." />
+    <MESSAGE value="changes in branch and affiliate business service." />
+    <MESSAGE value="changes in update auth status dto for update auth status service." />
+    <MESSAGE value="add recovery password service" />
+    <MESSAGE value="add test and changes in update user service" />
+    <MESSAGE value="merge from main" />
+    <MESSAGE value="changes in test." />
+    <MESSAGE value="update github workflow file" />
+    <MESSAGE value="delte unnecessary file." />
+    <option name="LAST_COMMIT_MESSAGE" value="delte unnecessary file." />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/backend/project/parkcontrol/service/UserService.java</url>
+          <line>44</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>
