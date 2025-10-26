@@ -23,7 +23,7 @@ import java.util.*;
 @Service
 public class ContractHistoryService {
     private final ContractHistoryCrud contracthistoryCrud;
-    private final ContractService contractService;
+    //private final ContractService contractService;
 
     // ==============================
     // GETTERS
@@ -57,11 +57,8 @@ public class ContractHistoryService {
                 .build();
     }
 
-    public ResponseSuccessfullyDto createContractHistory(NewContractHistoryDto dto) {
-
-        Contract contract = contractService.getContractById(dto.getId_contract());
+    public ResponseSuccessfullyDto createContractHistory(Contract contract) {
         verifyPlan(contract);
-
         return ResponseSuccessfullyDto.builder()
                 .code(HttpStatus.CREATED)
                 .message("Registros creados con Éxito")
@@ -101,7 +98,7 @@ public class ContractHistoryService {
 
     public ResponseSuccessfullyDto updateContractHistory(ContractHistoryDto dto) {
         ContractHistory existing = getContractHistoryById(dto.getId());
-        existing.setContract(contractService.getContractById(dto.getId_contract()));
+        //existing.setContract(contractService.getContractById(dto.getId_contract()));
         existing.setIncluded_hours(dto.getIncluded_hours());
         existing.setConsumed_hours(dto.getConsumed_hours());
         existing.setDate(dto.getDate());
