@@ -101,8 +101,8 @@ public class TicketService {
     // CRUD
     // ==============================
     public ResponseSuccessfullyDto createTicket(NewTicketDto dto){
-        checkAvailability(dto);
         checkPlate(dto);
+        checkAvailability(dto);
         Ticket e = new Ticket();
         e.setBranch(branchService.getBranchById(dto.getId_branch()));
         e.setPlate(dto.getPlate());

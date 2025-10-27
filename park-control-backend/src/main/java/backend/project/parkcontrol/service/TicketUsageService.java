@@ -119,10 +119,10 @@ public class TicketUsageService {
 
     public void updateRateAssignament(Ticket ticket){
         TicketUsage existing = getById_ticket(ticket.getId()).getFirst();
-        RateAssignment rateAssignment = rateAssignmentService.getRateAssignamentById_branchIsActive(ticket.getBranch().getId()).getFirst();
+        List<RateAssignment> rateAssignment = rateAssignmentService.getRateAssignamentById_branchIsActive(ticket.getBranch().getId());
         Double rate;
-        if (rateAssignment!=null){
-            rate = rateAssignment.getHourly_rate();
+        if (!rateAssignment.isEmpty()){
+            rate = rateAssignment.getFirst().getHourly_rate();
         }else{
             rate = rateAssignmentService.getRateAssignamentById_branchIsActive(ID_MAIN_BRANCH).getFirst().getHourly_rate();
         }
@@ -135,8 +135,8 @@ public class TicketUsageService {
     public void calculatePayment(Ticket ticket) {
        TicketUsage existing = getById_ticket(ticket.getId()).getFirst();
        //VERIFICAMOS SI TIENE CONTRATO ACTIVO
-       Contract contract = contractService.getByLicense_plate(ticket.getPlate()).getFirst();
-       if(contract!=null){
+       List<Contract> contract = contractService.getByLicense_plate(ticket.getPlate());
+       if(!contract.isEmpty()){//CLIENTE CON SUB
 
        }else{//CLIENTE SIN SUB
             Integer parkHours = calculateHours(ticket.getEntry_date(), ticket.getExit_date());
