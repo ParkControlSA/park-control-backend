@@ -140,18 +140,18 @@ public class TicketUsageService {
         ContractHistory contractHistory1 = null;
        if(isContract){//CLIENTE CON SUB
          Contract contract1 = contract.getFirst();
-         List<ContractHistory> contractHistory = contractHistoryService.findByContractAndDate(contract1.getId(), Date.valueOf(String.valueOf(ticket.getEntry_date())));
+           java.sql.Date entryDateSql = java.sql.Date.valueOf(ticket.getEntry_date().toLocalDate());
+           List<ContractHistory> contractHistory = contractHistoryService.findByContractAndDate(contract1.getId(), entryDateSql);
         if (!contractHistory.isEmpty()){
             contractHistory1 = contractHistory.getFirst();
             planHours = contractHistory1.getIncluded_hours()-contractHistory1.getConsumed_hours();
         }else{
                    log.info("Su plan no cubre el día "+ticket.getEntry_date().getDayOfWeek().toString());
         }
-       }//CLIENTE SIN SUB
+       }//CLIENTE GENERAL
             Integer parkHours = calculateHours(ticket.getEntry_date(), ticket.getExit_date());
             existing.setConsumed_hours(parkHours);
             existing.setTotal_hours(parkHours);
-             //                     2    -      0 = 2
             int hoursExceed = parkHours - existing.getGranted_hours();
            if (hoursExceed > 0) {
                if (planHours!=0){
