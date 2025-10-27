@@ -5,15 +5,13 @@ import backend.project.parkcontrol.dto.response.TicketUsageDto;
 import backend.project.parkcontrol.dto.response.ResponseSuccessfullyDto;
 import backend.project.parkcontrol.exception.BusinessException;
 import backend.project.parkcontrol.repository.crud.TicketUsageCrud;
-import backend.project.parkcontrol.repository.entities.Contract;
-import backend.project.parkcontrol.repository.entities.RateAssignment;
-import backend.project.parkcontrol.repository.entities.Ticket;
-import backend.project.parkcontrol.repository.entities.TicketUsage;
+import backend.project.parkcontrol.repository.entities.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -25,7 +23,7 @@ public class TicketUsageService {
     private final TicketUsageCrud ticketusageCrud;
     private final RateAssignmentService rateAssignmentService;
     private final ContractService contractService;
-    private final ValidationService validationService;
+    private final ContractHistoryService contractHistoryService;
     private static final Integer ID_MAIN_BRANCH = 1;
     // ==============================
     // GETTERS
@@ -135,22 +133,43 @@ public class TicketUsageService {
     public void calculatePayment(Ticket ticket) {
        TicketUsage existing = getById_ticket(ticket.getId()).getFirst();
        //VERIFICAMOS SI TIENE CONTRATO ACTIVO
-       List<Contract> contract = contractService.getByLicense_plate(ticket.getPlate());
-       if(!contract.isEmpty()){//CLIENTE CON SUB
-
-       }else{//CLIENTE SIN SUB
+       List<Contract> contract = contractService.getByLicense_plateIsActive(ticket.getPlate());
+       boolean isContract = !contract.isEmpty();
+       //DEFINIMOS EL PLAN HOURS Y EL CONTRATO HISTORY
+        int planHours = 0;
+        ContractHistory contractHistory1 = null;
+       if(isContract){//CLIENTE CON SUB
+         Contract contract1 = contract.getFirst();
+         List<ContractHistory> contractHistory = contractHistoryService.findByContractAndDate(contract1.getId(), Date.valueOf(String.valueOf(ticket.getEntry_date())));
+        if (!contractHistory.isEmpty()){
+            contractHistory1 = contractHistory.getFirst();
+            planHours = contractHistory1.getIncluded_hours()-contractHistory1.getConsumed_hours();
+        }else{
+                   log.info("Su plan no cubre el día "+ticket.getEntry_date().getDayOfWeek().toString());
+        }
+       }//CLIENTE SIN SUB
             Integer parkHours = calculateHours(ticket.getEntry_date(), ticket.getExit_date());
             existing.setConsumed_hours(parkHours);
             existing.setTotal_hours(parkHours);
-            Integer hoursExceed = parkHours - existing.getGranted_hours();
-           if (hoursExceed >= 0) {
-               existing.setExceeded_hours(hoursExceed);
+             //                     2    -      0 = 2
+            int hoursExceed = parkHours - existing.getGranted_hours();
+           if (hoursExceed > 0) {
+               if (planHours!=0){
+                   hoursExceed = hoursExceed - planHours;
+                   if (hoursExceed <= 0){
+                       existing.setExceeded_hours(0);
+                       contractHistory1.setConsumed_hours(contractHistory1.getIncluded_hours() - (hoursExceed*(-1)));
+                   }else{
+                       existing.setExceeded_hours(hoursExceed);
+                       contractHistory1.setConsumed_hours(contractHistory1.getIncluded_hours());
+                   }
+               }else{
+                   existing.setExceeded_hours(hoursExceed);
+               }
            }else{
                existing.setExceeded_hours(0);
            }
-
-           existing.setCustomer_amount(existing.getExceeded_hours()*existing.getHourly_rate());
-       }
+       existing.setCustomer_amount(existing.getExceeded_hours()*existing.getHourly_rate());
        ticketusageCrud.save(existing);
     }
 

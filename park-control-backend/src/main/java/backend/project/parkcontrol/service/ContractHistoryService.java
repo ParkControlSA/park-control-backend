@@ -34,6 +34,11 @@ public class ContractHistoryService {
         return list;
     }
 
+    public List<ContractHistory> findByContractAndDate(Integer id, java.sql.Date date) {
+        List<ContractHistory> list = contracthistoryCrud.findByContractAndDate(id, date);
+        return list;
+    }
+
     public List<ContractHistory> getAllContractHistoryList() {
         List<ContractHistory> list = contracthistoryCrud.findAll();
         return list;

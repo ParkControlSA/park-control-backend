@@ -42,6 +42,11 @@ public class ContractService {
         return list;
     }
 
+    public List<Contract> getByLicense_plateIsActive(String plate) {
+        List<Contract> list = contractCrud.findByLicense_plateActive(plate, true);
+        return list;
+    }
+
     public List<Contract> getAllContractList() {
         List<Contract> list = contractCrud.findAll();
         return list;
