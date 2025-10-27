@@ -14,4 +14,6 @@ public interface TicketBusinessUsageCrud extends JpaRepository<TicketBusinessUsa
     @Query(value = "select * from ticket_business_usage where id_affiliated_business = ?", nativeQuery = true)
     List<TicketBusinessUsage> findById_affiliated_business(Integer id_affiliated_business);
 
+    @Query(value = "select * from ticket_business_usage where id_affiliated_business = ? and id_ticket_usage = ?", nativeQuery = true)
+    List<TicketBusinessUsage> findById_affiliated_businessId_ticket_usage(Integer id_affiliated_business, Integer id_ticket_usage);
 }

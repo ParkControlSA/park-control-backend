@@ -11,4 +11,7 @@ public interface ContractHistoryCrud extends JpaRepository<ContractHistory, Inte
     @Query(value = "select * from contract_history where id_contract = ?", nativeQuery = true)
     List<ContractHistory> findById_contract(Integer id_contract);
 
+    @Query(value = "SELECT * FROM contract_history WHERE id_contract = ?1 AND DATE(date) = ?2", nativeQuery = true)
+    List<ContractHistory> findByContractAndDate(Integer id_contract, java.sql.Date date);
+
 }

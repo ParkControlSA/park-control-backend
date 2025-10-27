@@ -5,6 +5,7 @@ import backend.project.parkcontrol.dto.response.TicketUsageDto;
 import backend.project.parkcontrol.dto.response.ResponseSuccessfullyDto;
 import backend.project.parkcontrol.exception.BusinessException;
 import backend.project.parkcontrol.repository.crud.TicketUsageCrud;
+import backend.project.parkcontrol.repository.entities.Contract;
 import backend.project.parkcontrol.repository.entities.RateAssignment;
 import backend.project.parkcontrol.repository.entities.Ticket;
 import backend.project.parkcontrol.repository.entities.TicketUsage;
@@ -20,6 +21,7 @@ import java.util.*;
 public class TicketUsageService {
     private final TicketUsageCrud ticketusageCrud;
     private final RateAssignmentService rateAssignmentService;
+    private final ContractService contractService;
     private static final Integer ID_MAIN_BRANCH = 1;
     // ==============================
     // GETTERS
@@ -124,5 +126,16 @@ public class TicketUsageService {
         ticketusageCrud.save(existing);
 
         log.info("Tarifa Hora Aplicada.");
+    }
+
+    public void calculatePayment(Ticket ticket) {
+       TicketUsage existing = getById_ticket(ticket.getId()).getFirst();
+       //VERIFICAMOS SI TIENE CONTRATO ACTIVO
+       Contract contract = contractService.getByLicense_plate(ticket.getPlate()).getFirst();
+       if(contract!=null){
+
+       }else{//CLIENTE SIN SUB
+
+       }
     }
 }
