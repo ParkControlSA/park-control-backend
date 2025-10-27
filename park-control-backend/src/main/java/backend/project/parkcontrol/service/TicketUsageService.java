@@ -13,6 +13,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Slf4j
@@ -22,6 +25,7 @@ public class TicketUsageService {
     private final TicketUsageCrud ticketusageCrud;
     private final RateAssignmentService rateAssignmentService;
     private final ContractService contractService;
+    private final ValidationService validationService;
     private static final Integer ID_MAIN_BRANCH = 1;
     // ==============================
     // GETTERS
@@ -135,7 +139,34 @@ public class TicketUsageService {
        if(contract!=null){
 
        }else{//CLIENTE SIN SUB
+            Integer parkHours = calculateHours(ticket.getEntry_date(), ticket.getExit_date());
+            existing.setConsumed_hours(parkHours);
+            existing.setTotal_hours(parkHours);
+            Integer hoursExceed = parkHours - existing.getGranted_hours();
+           if (hoursExceed >= 0) {
+               existing.setExceeded_hours(hoursExceed);
+           }else{
+               existing.setExceeded_hours(0);
+           }
 
+           existing.setCustomer_amount(existing.getExceeded_hours()*existing.getHourly_rate());
        }
+       ticketusageCrud.save(existing);
+    }
+
+    public int calculateHours(LocalDateTime inicio, LocalDateTime fin) {
+        // Si la fecha final es antes que la inicial, lanza excepción o devuelve 0
+        if (fin.isBefore(inicio)) {
+            throw new IllegalArgumentException("La fecha final no puede ser anterior a la inicial");
+        }
+
+        // Calculamos la diferencia total en minutos
+        long minutos = Duration.between(inicio, fin).toMinutes();
+
+        // Convertimos a horas con redondeo hacia arriba
+        double horas = Math.ceil(minutos / 60.0);
+
+        // Mínimo 1 hora
+        return (int) Math.max(horas, 1);
     }
 }
