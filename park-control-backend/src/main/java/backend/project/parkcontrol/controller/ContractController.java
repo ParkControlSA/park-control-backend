@@ -66,4 +66,11 @@ public class ContractController implements ContractApi {
         ResponseSuccessfullyDto resp = contractService.getById_userResponse(id);
         return new ResponseEntity<>(resp, resp.getCode());
     }
+
+    @Override
+    public ResponseEntity<ResponseSuccessfullyDto> getContractsByPlate(String plate) {
+        log.info("GET /contract/plate/{}", plate);
+        ResponseSuccessfullyDto resp = contractService.getByLicense_plateResponse(plate);
+        return new ResponseEntity<>(resp, resp.getCode());
+    }
 }

@@ -28,4 +28,7 @@ public interface ContractApi {
 
     @GetMapping("/user/{id}")
     ResponseEntity<ResponseSuccessfullyDto> getContractsByUserId(@PathVariable Integer id);
+
+    @GetMapping("/plate/{plate}")
+    ResponseEntity<ResponseSuccessfullyDto> getContractsByPlate(@PathVariable String plate);
 }

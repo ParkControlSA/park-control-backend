@@ -34,13 +34,16 @@ public class ContractService {
 
     public List<Contract> getById_user(Integer id) {
         List<Contract> list = contractCrud.findById_user(id);
-        if (list.isEmpty()) throw new BusinessException(HttpStatus.NOT_FOUND, "Not found");
+        return list;
+    }
+
+    public List<Contract> getByLicense_plate(String plate) {
+        List<Contract> list = contractCrud.findByLicense_plate(plate);
         return list;
     }
 
     public List<Contract> getAllContractList() {
         List<Contract> list = contractCrud.findAll();
-        if (list.isEmpty()) throw new BusinessException(HttpStatus.NOT_FOUND, "No records");
         return list;
     }
 
@@ -68,6 +71,7 @@ public class ContractService {
                 () -> new BusinessException(HttpStatus.NOT_FOUND, "User not found")));
         e.setSubscriptionPlan(subscriptionPlanService.getSubscriptionPlanById(dto.getId_plan()));
         e.setIs_4r(dto.getIs_4r());
+        verifyPlate(dto.getLicense_plate());
         e.setLicense_plate(dto.getLicense_plate());
         LocalDateTime hoy = LocalDateTime.now();
         e.setStart_date(hoy);
@@ -84,6 +88,13 @@ public class ContractService {
                 .body(Map.of("id", saved.getId()))
                 .message("Registro creado con Éxito")
                 .build();
+    }
+
+    private void verifyPlate(String licensePlate) {
+        if (!getByLicense_plate(licensePlate).isEmpty()){
+            throw new BusinessException(HttpStatus.BAD_REQUEST,
+                    "La placa ya está registrada en otro contrato.");
+        }
     }
 
     private void verifyMonths(Integer months) {
@@ -141,4 +152,14 @@ public class ContractService {
                 .body(getById_user(id))
                 .build();
     }
+
+    public ResponseSuccessfullyDto getByLicense_plateResponse(String id) {
+        return ResponseSuccessfullyDto.builder()
+                .code(HttpStatus.FOUND)
+                .message("Registros encontrados con Éxito")
+                .body(getByLicense_plate(id))
+                .build();
+    }
+
+
 }

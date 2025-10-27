@@ -34,7 +34,6 @@ public class TicketService {
     private final BranchService branchService;
     private final BranchCrud branchCrud;
     private final TicketUsageService ticketUsageService;
-
     // ==============================
     // GETTERS
     // ==============================
@@ -83,6 +82,18 @@ public class TicketService {
                 .code(HttpStatus.FOUND)
                 .message("Registro encontrado con éxito")
                 .body(getTicketById(id))
+                .build();
+    }
+
+    public List<Ticket> getByIdbranchStatus(Integer idBranch, Integer status){
+        return ticketCrud.findByIdBranchStatus(idBranch,status);
+    }
+
+    public ResponseSuccessfullyDto getByIdbranchStatusResponse(Integer idBranch, Integer status){
+        return ResponseSuccessfullyDto.builder()
+                .code(HttpStatus.FOUND)
+                .message("Registros encontrados con éxito")
+                .body(getByIdbranchStatus(idBranch, status))
                 .build();
     }
 
@@ -158,9 +169,10 @@ public class TicketService {
             throw new BusinessException(HttpStatus.BAD_REQUEST,
                     "El vehículo ya no se encuentra dentro del parqueo.");
         }
-
         ticket.setStatus(TicketStatus.SALIDA_REGISTRADA.getValue());
         ticket.setExit_date(LocalDateTime.now(ZoneId.of("America/Guatemala")));
+        //UPDATE TICKET CONSUMO
+        ticketUsageService.calculatePayment(ticket);
         ticketCrud.save(ticket);
         updateAvailability(ticket);
         return ResponseSuccessfullyDto.builder()

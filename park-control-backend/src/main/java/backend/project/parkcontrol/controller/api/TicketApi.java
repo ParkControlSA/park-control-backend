@@ -32,6 +32,10 @@ public interface TicketApi {
     @GetMapping("/plate/{plate}")
     ResponseEntity<ResponseSuccessfullyDto> getByPlate(@PathVariable String plate);
 
+    // Filtro por sucursal
+    @GetMapping("/branch/active/{id}")
+    ResponseEntity<ResponseSuccessfullyDto> getByIdbranchActive(@PathVariable Integer id);
+
     //Cerrar Ticket
     @PutMapping("/id/{id}")
     ResponseEntity<ResponseSuccessfullyDto> closeTicketId(@PathVariable Integer id);

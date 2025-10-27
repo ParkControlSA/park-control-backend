@@ -65,7 +65,7 @@ public class ContractPaymentService {
         Contract contract = contractService.getContractById(dto.getId_contract());
         RateAssignment rateAssignment = rateAssignmentService.getRateAssignamentById_branchIsActive(ID_SUCURSAL_BASE).getFirst();
         SubscriptionPlan subscriptionPlan = contract.getSubscriptionPlan();
-        Double pagoSinDescuentos = contract.getMonths()*rateAssignment.getHourly_rate();
+        Double pagoSinDescuentos = contract.getMonths()*rateAssignment.getHourly_rate()*subscriptionPlan.getMonth_hours();
         Double descuentoMensual = pagoSinDescuentos*(subscriptionPlan.getTotal_discount()/100);
         e.setContract(contract);
         e.setSubtotal(pagoSinDescuentos);

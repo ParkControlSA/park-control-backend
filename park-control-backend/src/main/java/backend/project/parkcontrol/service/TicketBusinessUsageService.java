@@ -19,7 +19,7 @@ public class TicketBusinessUsageService {
     private final TicketBusinessUsageCrud ticketbusinessusageCrud;
     private final AffiliatedBusinessService affiliatedBusinessService;
     private final TicketUsageService ticketUsageService;
-
+    private final ValidationService validationService;
     // ==============================
     // GETTERS
     // ==============================
@@ -83,6 +83,7 @@ public class TicketBusinessUsageService {
     // ==============================
     public ResponseSuccessfullyDto createTicketBusinessUsage(NewTicketBusinessUsageDto dto){
         TicketBusinessUsage e = new TicketBusinessUsage();
+        verifyData(dto);
         e.setTicketUsage(ticketUsageService.getTicketUsageById(dto.getId_ticket_usage()));
         e.setAffiliatedBusiness(affiliatedBusinessService.getAffiliatedBusinessById(dto.getId_affiliated_business()));
         e.setGranted_hours(dto.getGranted_hours());
@@ -93,6 +94,15 @@ public class TicketBusinessUsageService {
                 .code(HttpStatus.CREATED)
                 .message("Registro creado con Éxito")
                 .build();
+    }
+
+    private void verifyData(NewTicketBusinessUsageDto dto) {
+        validationService.validatePositiveNumber(dto.getGranted_hours(), "Horas Otorgadas del Comercio");
+        if (!ticketbusinessusageCrud.findById_affiliated_businessId_ticket_usage(dto.getId_affiliated_business(), dto.getId_ticket_usage()).isEmpty()) {
+            throw new BusinessException(HttpStatus.BAD_REQUEST,
+                    "Ya se han asignado horas gratuitas a este ticket.");
+        }
+
     }
 
     public ResponseSuccessfullyDto updateTicketBusinessUsage(TicketBusinessUsageDto dto){

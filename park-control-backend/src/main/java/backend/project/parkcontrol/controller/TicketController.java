@@ -4,6 +4,7 @@ import backend.project.parkcontrol.controller.api.TicketApi;
 import backend.project.parkcontrol.dto.request.NewTicketDto;
 import backend.project.parkcontrol.dto.response.ResponseSuccessfullyDto;
 import backend.project.parkcontrol.dto.response.TicketDto;
+import backend.project.parkcontrol.enums.TicketStatus;
 import backend.project.parkcontrol.service.TicketService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -59,6 +60,12 @@ public class TicketController implements TicketApi {
     public ResponseEntity<ResponseSuccessfullyDto> getByPlate(String plate) {
         log.info("GET /ticket/plate/{}", plate);
         return ResponseEntity.ok(ticketService.getByPlateResponse(plate));
+    }
+
+    @Override
+    public ResponseEntity<ResponseSuccessfullyDto> getByIdbranchActive(Integer id) {
+        log.info("GET /ticket/branch/active/{}", id);
+        return ResponseEntity.ok(ticketService.getByIdbranchStatusResponse(id, TicketStatus.ENTRADA_REGISTRADA.getValue()));
     }
 
     @Override
