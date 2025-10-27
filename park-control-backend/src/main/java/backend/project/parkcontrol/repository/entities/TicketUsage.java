@@ -25,6 +25,9 @@ public class TicketUsage {
     @Column(name = "consumed_plan_hours")
     private Integer consumed_plan_hours;
 
+    @Column(name = "consumed_hours")
+    private Integer consumed_hours;
+
     @Column(name = "exceeded_hours")
     private Integer exceeded_hours;
 
