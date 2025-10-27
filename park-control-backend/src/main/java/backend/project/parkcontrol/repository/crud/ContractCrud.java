@@ -13,4 +13,7 @@ public interface ContractCrud extends JpaRepository<Contract, Integer> {
 
     @Query(value = "select * from contract where license_plate = ?", nativeQuery = true)
     List<Contract> findByLicense_plate(String license_plate);
+
+    @Query(value = "select * from contract where license_plate = ? and active = ?", nativeQuery = true)
+    List<Contract> findByLicense_plateActive(String license_plate, Boolean active);
 }
