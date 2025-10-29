@@ -159,10 +159,12 @@ public class TicketUsageService {
                    if (hoursExceed <= 0){
                        existing.setExceeded_hours(0);
                        contractHistory1.setConsumed_hours(contractHistory1.getIncluded_hours() - (hoursExceed*(-1)));
+
                    }else{
                        existing.setExceeded_hours(hoursExceed);
                        contractHistory1.setConsumed_hours(contractHistory1.getIncluded_hours());
                    }
+                   existing.setConsumed_plan_hours(contractHistory1.getIncluded_hours() - contractHistory1.getConsumed_hours());
                }else{
                    existing.setExceeded_hours(hoursExceed);
                }
