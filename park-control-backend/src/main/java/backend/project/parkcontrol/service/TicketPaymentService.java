@@ -6,10 +6,15 @@ import backend.project.parkcontrol.dto.response.ResponseSuccessfullyDto;
 import backend.project.parkcontrol.exception.BusinessException;
 import backend.project.parkcontrol.repository.crud.TicketPaymentCrud;
 import backend.project.parkcontrol.repository.entities.TicketPayment;
+import backend.project.parkcontrol.repository.entities.TicketUsage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 
 @Slf4j
@@ -18,13 +23,13 @@ import java.util.*;
 public class TicketPaymentService {
     private final TicketPaymentCrud ticketpaymentCrud;
     private final TicketService ticketService;
+    private final TicketUsageService ticketUsageService;
 
     // ==============================
     // GETTERS
     // ==============================
     public List<TicketPayment> getById_ticket(Integer id){
         List<TicketPayment> list = ticketpaymentCrud.findById_ticket(id);
-        if(list.isEmpty()) throw new BusinessException(HttpStatus.NOT_FOUND, "No se encontraron registros para el ticket");
         return list;
     }
 
@@ -38,7 +43,6 @@ public class TicketPaymentService {
 
     public List<TicketPayment> getAllTicketPaymentList(){
         List<TicketPayment> list = ticketpaymentCrud.findAll();
-        if(list.isEmpty()) throw new BusinessException(HttpStatus.NOT_FOUND, "No hay registros");
         return list;
     }
 
@@ -51,8 +55,7 @@ public class TicketPaymentService {
     }
 
     public TicketPayment getTicketPaymentById(Integer id){
-        return ticketpaymentCrud.findById(id)
-                .orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, "Registro no encontrado"));
+        return ticketpaymentCrud.findById(id).get();
     }
 
     public ResponseSuccessfullyDto getTicketPaymentByIdResponse(Integer id){
@@ -68,9 +71,11 @@ public class TicketPaymentService {
     // ==============================
     public ResponseSuccessfullyDto createTicketPayment(NewTicketPaymentDto dto){
         TicketPayment e = new TicketPayment();
+        verifyTicketPayment(dto);
+        TicketUsage ticketUsage = ticketUsageService.getById_ticket(dto.getId_ticket()).getFirst();
         e.setTicket(ticketService.getTicketById(dto.getId_ticket()));
-        e.setTotal_amount(dto.getTotal_amount());
-        e.setDate(dto.getDate());
+        e.setTotal_amount(ticketUsage.getCustomer_amount());
+        e.setDate(LocalDateTime.now(ZoneId.of("America/Guatemala")));
         e.setPayment_method(dto.getPayment_method());
 
         ticketpaymentCrud.save(e);
@@ -79,6 +84,14 @@ public class TicketPaymentService {
                 .code(HttpStatus.CREATED)
                 .message("Registro creado con Éxito")
                 .build();
+    }
+
+    private void verifyTicketPayment(NewTicketPaymentDto dto) {
+        List<TicketPayment> ticketPayment = getById_ticket(dto.getId_ticket());
+        if (!ticketPayment.isEmpty()) {
+            throw new BusinessException(HttpStatus.BAD_REQUEST,
+                    "Ya se ha emitido una factura del ticket "+dto.getId_ticket());
+        }
     }
 
     public ResponseSuccessfullyDto updateTicketPayment(TicketPaymentDto dto){
