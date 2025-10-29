@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Builder
 public class NewTicketPaymentDto {
     private Integer id_ticket;
-    private Double total_amount;
-    private LocalDateTime date;
+    //private Double total_amount;
+    //private LocalDateTime date;
     private Integer payment_method;
 }
