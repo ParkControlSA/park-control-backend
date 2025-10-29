@@ -3,8 +3,11 @@ package backend.project.parkcontrol.service;
 import backend.project.parkcontrol.dto.request.NewTicketPaymentDto;
 import backend.project.parkcontrol.dto.response.TicketPaymentDto;
 import backend.project.parkcontrol.dto.response.ResponseSuccessfullyDto;
+import backend.project.parkcontrol.enums.TicketStatus;
 import backend.project.parkcontrol.exception.BusinessException;
+import backend.project.parkcontrol.repository.crud.TicketCrud;
 import backend.project.parkcontrol.repository.crud.TicketPaymentCrud;
+import backend.project.parkcontrol.repository.entities.Ticket;
 import backend.project.parkcontrol.repository.entities.TicketPayment;
 import backend.project.parkcontrol.repository.entities.TicketUsage;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +26,7 @@ import java.util.*;
 public class TicketPaymentService {
     private final TicketPaymentCrud ticketpaymentCrud;
     private final TicketService ticketService;
+    private final TicketCrud ticketCrud;
     private final TicketUsageService ticketUsageService;
 
     // ==============================
@@ -77,13 +81,18 @@ public class TicketPaymentService {
         e.setTotal_amount(ticketUsage.getCustomer_amount());
         e.setDate(LocalDateTime.now(ZoneId.of("America/Guatemala")));
         e.setPayment_method(dto.getPayment_method());
-
         ticketpaymentCrud.save(e);
-
+        changeTicketStatus(dto);
         return ResponseSuccessfullyDto.builder()
                 .code(HttpStatus.CREATED)
                 .message("Registro creado con Éxito")
                 .build();
+    }
+
+    private void changeTicketStatus(NewTicketPaymentDto dto) {
+        Ticket ticket = ticketService.getTicketById(dto.getId_ticket());
+        ticket.setStatus(TicketStatus.TICKET_PAGADO.getValue());
+        ticketCrud.save(ticket);
     }
 
     private void verifyTicketPayment(NewTicketPaymentDto dto) {
