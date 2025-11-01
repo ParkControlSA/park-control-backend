@@ -14,4 +14,7 @@ public interface LicensePlateBlockRequestCrud extends JpaRepository<LicensePlate
     @Query(value = "select * from license_plate_block_request where id_assigned = ?", nativeQuery = true)
     List<LicensePlateBlockRequest> findById_assigned(Integer id_assigned);
 
+    @Query(value = "select * from license_plate_block_request where status = ?", nativeQuery = true)
+    List<LicensePlateBlockRequest> findAllByStatus(Integer status);
+
 }

@@ -19,9 +19,15 @@ public interface LicensePlateBlockRequestApi {
     @DeleteMapping("/{id}")
     ResponseEntity<ResponseSuccessfullyDto> deleteLicensePlateBlockRequest(@PathVariable Integer id);
 
+    @PutMapping("/changeStatus/{id}/{status}")
+    ResponseEntity<ResponseSuccessfullyDto> changeStatus(@PathVariable Integer id,@PathVariable Integer status );
+
     // GETTERS
     @GetMapping("/all")
     ResponseEntity<ResponseSuccessfullyDto> getAllLicensePlateBlockRequest();
+
+    @GetMapping("/all/status/{id}")
+    ResponseEntity<ResponseSuccessfullyDto> getAllByStatus(@PathVariable Integer id);
 
     @GetMapping("/{id}")
     ResponseEntity<ResponseSuccessfullyDto> getById(@PathVariable Integer id);
