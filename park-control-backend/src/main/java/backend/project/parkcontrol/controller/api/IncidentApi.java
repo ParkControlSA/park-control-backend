@@ -19,6 +19,8 @@ public interface IncidentApi {
     @DeleteMapping("/{id}")
     ResponseEntity<ResponseSuccessfullyDto> deleteIncident(@PathVariable Integer id);
 
+    @PutMapping("/solve/{id}")
+    ResponseEntity<ResponseSuccessfullyDto> solveIncident(@PathVariable Integer id);
     // GETTERS
     @GetMapping("/all")
     ResponseEntity<ResponseSuccessfullyDto> getAllIncidents();
