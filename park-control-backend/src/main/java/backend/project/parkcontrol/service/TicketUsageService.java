@@ -4,6 +4,7 @@ import backend.project.parkcontrol.dto.request.NewTicketUsageDto;
 import backend.project.parkcontrol.dto.response.TicketUsageDto;
 import backend.project.parkcontrol.dto.response.ResponseSuccessfullyDto;
 import backend.project.parkcontrol.exception.BusinessException;
+import backend.project.parkcontrol.repository.crud.TicketPaymentCrud;
 import backend.project.parkcontrol.repository.crud.TicketUsageCrud;
 import backend.project.parkcontrol.repository.entities.*;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.sql.Date;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 
 @Slf4j
@@ -24,7 +26,10 @@ public class TicketUsageService {
     private final RateAssignmentService rateAssignmentService;
     private final ContractService contractService;
     private final ContractHistoryService contractHistoryService;
+    private final TicketPaymentCrud ticketpaymentCrud;
     private static final Integer ID_MAIN_BRANCH = 1;
+    private static final Integer PAID_BY_PLAN = 3;
+    private static final Integer PAID_BY_BUSSINES = 4;
     // ==============================
     // GETTERS
     // ==============================
@@ -159,7 +164,7 @@ public class TicketUsageService {
                    if (hoursExceed <= 0){
                        existing.setExceeded_hours(0);
                        contractHistory1.setConsumed_hours(contractHistory1.getIncluded_hours() - (hoursExceed*(-1)));
-
+                       createTicketPayment(ticket, 0.0, PAID_BY_PLAN);
                    }else{
                        existing.setExceeded_hours(hoursExceed);
                        contractHistory1.setConsumed_hours(contractHistory1.getIncluded_hours());
@@ -170,6 +175,7 @@ public class TicketUsageService {
                }
            }else{
                existing.setExceeded_hours(0);
+               createTicketPayment(ticket, 0.0, PAID_BY_BUSSINES);
            }
        existing.setCustomer_amount(existing.getExceeded_hours()*existing.getHourly_rate());
        ticketusageCrud.save(existing);
@@ -189,5 +195,14 @@ public class TicketUsageService {
 
         // Mínimo 1 hora
         return (int) Math.max(horas, 1);
+    }
+
+    public void createTicketPayment(Ticket ticket, Double monto, int paymentMethod){
+        TicketPayment e = new TicketPayment();
+        e.setTicket(ticket);
+        e.setTotal_amount(monto);
+        e.setDate(LocalDateTime.now(ZoneId.of("America/Guatemala")));
+        e.setPayment_method(paymentMethod);
+        ticketpaymentCrud.save(e);
     }
 }

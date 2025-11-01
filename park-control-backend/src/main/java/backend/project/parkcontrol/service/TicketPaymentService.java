@@ -75,7 +75,7 @@ public class TicketPaymentService {
     // ==============================
     public ResponseSuccessfullyDto createTicketPayment(NewTicketPaymentDto dto){
         TicketPayment e = new TicketPayment();
-        verifyTicketPayment(dto);
+        //verifyTicketPayment(dto);
         TicketUsage ticketUsage = ticketUsageService.getById_ticket(dto.getId_ticket()).getFirst();
         e.setTicket(ticketService.getTicketById(dto.getId_ticket()));
         e.setTotal_amount(ticketUsage.getCustomer_amount());
@@ -93,14 +93,6 @@ public class TicketPaymentService {
         Ticket ticket = ticketService.getTicketById(dto.getId_ticket());
         ticket.setStatus(TicketStatus.TICKET_PAGADO.getValue());
         ticketCrud.save(ticket);
-    }
-
-    private void verifyTicketPayment(NewTicketPaymentDto dto) {
-        List<TicketPayment> ticketPayment = getById_ticket(dto.getId_ticket());
-        if (!ticketPayment.isEmpty()) {
-            throw new BusinessException(HttpStatus.BAD_REQUEST,
-                    "Ya se ha emitido una factura del ticket "+dto.getId_ticket());
-        }
     }
 
     public ResponseSuccessfullyDto updateTicketPayment(TicketPaymentDto dto){
