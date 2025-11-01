@@ -42,6 +42,13 @@ public class LicensePlateBlockRequestController implements LicensePlateBlockRequ
         return new ResponseEntity<>(resp, resp.getCode());
     }
 
+    @Override
+    public ResponseEntity<ResponseSuccessfullyDto> changeStatus(Integer id, Integer status) {
+        log.info("PUT /licensePlateBlockRequests/changeStatus/{}/{}", id, status);
+        ResponseSuccessfullyDto resp = service.changeStatus(id, status);
+        return new ResponseEntity<>(resp, resp.getCode());
+    }
+
     // ==============================
     // GETTERS
     // ==============================
@@ -50,6 +57,13 @@ public class LicensePlateBlockRequestController implements LicensePlateBlockRequ
     public ResponseEntity<ResponseSuccessfullyDto> getAllLicensePlateBlockRequest() {
         log.info("GET /licensePlateBlockRequests/all");
         ResponseSuccessfullyDto resp = service.getAllLicensePlateBlockRequestListResponse();
+        return new ResponseEntity<>(resp, resp.getCode());
+    }
+
+    @Override
+    public ResponseEntity<ResponseSuccessfullyDto> getAllByStatus(Integer id) {
+        log.info("GET /licensePlateBlockRequests/all/status/{}",id);
+        ResponseSuccessfullyDto resp = service.getAllLicensePlateBlockRequestListByStatusResponse(id);
         return new ResponseEntity<>(resp, resp.getCode());
     }
 
