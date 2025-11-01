@@ -36,6 +36,13 @@ public class IncidentController implements IncidentApi {
     }
 
     @Override
+    public ResponseEntity<ResponseSuccessfullyDto> solveIncident(Integer id) {
+        log.info("PUT /incident/solve/{}", id);
+        ResponseSuccessfullyDto resp = incidentService.solveIncident(id);
+        return new ResponseEntity<>(resp, resp.getCode());
+    }
+
+    @Override
     public ResponseEntity<ResponseSuccessfullyDto> deleteIncident(Integer id) {
         log.info("DELETE /incident/{}", id);
         ResponseSuccessfullyDto resp = incidentService.deleteIncident(id);

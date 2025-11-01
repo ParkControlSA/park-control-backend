@@ -15,6 +15,6 @@ public class NewIncidentDto {
     private String description;
     private String evidence_url;
     private Integer id_user_manager;
-    private Integer status;
-    private LocalDateTime date;
+    //private Integer status;
+    //private LocalDateTime date;
 }
