@@ -77,6 +77,10 @@ public class IncidentService {
         e.setUser(userCrud.findById(dto.getId_user_manager()).get());
         e.setStatus(IncidentStatus.PENDIENTE.getValue());
         e.setDate(LocalDateTime.now(ZoneId.of("America/Guatemala")));
+        //ACTUALIZAMOS EL ESTADO DEL TICKET
+        Ticket ticket = e.getTicket();
+        ticket.setStatus(TicketStatus.INCIDENTE.getValue());
+        ticketCrud.save(ticket);
         incidentCrud.save(e);
 
         return ResponseSuccessfullyDto.builder()
