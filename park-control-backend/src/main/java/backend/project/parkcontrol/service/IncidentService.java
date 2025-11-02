@@ -4,10 +4,13 @@ import backend.project.parkcontrol.dto.request.NewIncidentDto;
 import backend.project.parkcontrol.dto.response.IncidentDto;
 import backend.project.parkcontrol.dto.response.ResponseSuccessfullyDto;
 import backend.project.parkcontrol.enums.IncidentStatus;
+import backend.project.parkcontrol.enums.TicketStatus;
 import backend.project.parkcontrol.exception.BusinessException;
 import backend.project.parkcontrol.repository.crud.IncidentCrud;
+import backend.project.parkcontrol.repository.crud.TicketCrud;
 import backend.project.parkcontrol.repository.crud.UserCrud;
 import backend.project.parkcontrol.repository.entities.Incident;
+import backend.project.parkcontrol.repository.entities.Ticket;
 import backend.project.parkcontrol.repository.entities.UserEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +28,7 @@ import java.util.*;
 public class IncidentService {
     private final IncidentCrud incidentCrud;
     private final UserCrud userCrud;
+    private final TicketCrud ticketCrud;
     private final TicketService ticketService;
     // ==============================
     // GETTERS
@@ -114,10 +118,13 @@ public class IncidentService {
 
         existing.setStatus(IncidentStatus.RESUELTO.getValue());
         incidentCrud.save(existing);
-
+        //cambiamos el estado del ticket
+        Ticket ticket = existing.getTicket();
+        ticket.setStatus(TicketStatus.ENTRADA_REGISTRADA.getValue());
+        ticketCrud.save(ticket);
         return ResponseSuccessfullyDto.builder()
                 .code(HttpStatus.OK)
-                .message("Incidente Resuelto")
+                .message("Incidente Resuelto Y Ticket Actualizado.")
                 .build();
     }
 
