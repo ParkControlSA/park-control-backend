@@ -101,12 +101,12 @@ public class LicensePlateBlockRequestService {
             throw new BusinessException(HttpStatus.BAD_REQUEST,
                     "La nueva placa ya está asociada a un contrato activo.");
         }
-
+/*
         UserEntity userEntity = userCrud.findById(dto.getId_assigned()).get();
         if (userEntity.getRol().getId() != 3) {
             throw new BusinessException(HttpStatus.BAD_REQUEST,
                     "El usuario no corresponde a un Back Office");
-        }
+        }*/
     }
 
 
