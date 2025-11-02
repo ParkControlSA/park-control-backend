@@ -43,9 +43,9 @@ public class LicensePlateBlockRequestController implements LicensePlateBlockRequ
     }
 
     @Override
-    public ResponseEntity<ResponseSuccessfullyDto> changeStatus(Integer id, Integer status) {
-        log.info("PUT /licensePlateBlockRequests/changeStatus/{}/{}", id, status);
-        ResponseSuccessfullyDto resp = service.changeStatus(id, status);
+    public ResponseEntity<ResponseSuccessfullyDto> changeStatus(Integer idUser,Integer id, Integer status) {
+        log.info("PUT /licensePlateBlockRequests/changeStatus/{}/{}/{}", idUser, id, status);
+        ResponseSuccessfullyDto resp = service.changeStatus(idUser, id, status);
         return new ResponseEntity<>(resp, resp.getCode());
     }
 
