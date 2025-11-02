@@ -3,7 +3,9 @@ package backend.project.parkcontrol.service;
 import backend.project.parkcontrol.dto.request.NewTicketUsageDto;
 import backend.project.parkcontrol.dto.response.TicketUsageDto;
 import backend.project.parkcontrol.dto.response.ResponseSuccessfullyDto;
+import backend.project.parkcontrol.enums.TicketStatus;
 import backend.project.parkcontrol.exception.BusinessException;
+import backend.project.parkcontrol.repository.crud.TicketCrud;
 import backend.project.parkcontrol.repository.crud.TicketPaymentCrud;
 import backend.project.parkcontrol.repository.crud.TicketUsageCrud;
 import backend.project.parkcontrol.repository.entities.*;
@@ -22,6 +24,7 @@ import java.util.*;
 @RequiredArgsConstructor
 @Service
 public class TicketUsageService {
+    private final TicketCrud ticketCrud;
     private final TicketUsageCrud ticketusageCrud;
     private final RateAssignmentService rateAssignmentService;
     private final ContractService contractService;
@@ -59,8 +62,8 @@ public class TicketUsageService {
                 .build();
     }
 
-    public TicketUsage getTicketUsageById(Integer id){
-        return ticketusageCrud.findById(id).get();
+    public TicketUsage getTicketUsageById(Integer id) {
+        return ticketusageCrud.findById(id).orElse(new TicketUsage());
     }
 
     public ResponseSuccessfullyDto getTicketUsageByIdResponse(Integer id){
@@ -165,6 +168,7 @@ public class TicketUsageService {
                        existing.setExceeded_hours(0);
                        contractHistory1.setConsumed_hours(contractHistory1.getIncluded_hours() - (hoursExceed*(-1)));
                        createTicketPayment(ticket, 0.0, PAID_BY_PLAN);
+                       ticket.setStatus(TicketStatus.TICKET_PAGADO.getValue());
                    }else{
                        existing.setExceeded_hours(hoursExceed);
                        contractHistory1.setConsumed_hours(contractHistory1.getIncluded_hours());
@@ -176,9 +180,11 @@ public class TicketUsageService {
            }else{
                existing.setExceeded_hours(0);
                createTicketPayment(ticket, 0.0, PAID_BY_BUSSINES);
+               ticket.setStatus(TicketStatus.TICKET_PAGADO.getValue());
            }
        existing.setCustomer_amount(existing.getExceeded_hours()*existing.getHourly_rate());
        ticketusageCrud.save(existing);
+       ticketCrud.save(ticket);
     }
 
     public int calculateHours(LocalDateTime inicio, LocalDateTime fin) {

@@ -25,7 +25,6 @@ public class TicketBusinessUsageService {
     // ==============================
     public List<TicketBusinessUsage> getById_ticket_usage(Integer id){
         List<TicketBusinessUsage> list = ticketbusinessusageCrud.findById_ticket_usage(id);
-        if(list.isEmpty()) throw new BusinessException(HttpStatus.NOT_FOUND, "No se encontraron registros para el ticket usage");
         return list;
     }
 
@@ -39,7 +38,6 @@ public class TicketBusinessUsageService {
 
     public List<TicketBusinessUsage> getById_affiliated_business(Integer id){
         List<TicketBusinessUsage> list = ticketbusinessusageCrud.findById_affiliated_business(id);
-        if(list.isEmpty()) throw new BusinessException(HttpStatus.NOT_FOUND, "No se encontraron registros para el negocio afiliado");
         return list;
     }
 
@@ -53,7 +51,6 @@ public class TicketBusinessUsageService {
 
     public List<TicketBusinessUsage> getAllTicketBusinessUsageList(){
         List<TicketBusinessUsage> list = ticketbusinessusageCrud.findAll();
-        if(list.isEmpty()) throw new BusinessException(HttpStatus.NOT_FOUND, "No hay registros");
         return list;
     }
 

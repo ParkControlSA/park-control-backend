@@ -68,8 +68,7 @@ public class LicensePlateBlockRequestService {
         e.setIs_4r(dto.getIs_4r());
         Contract contract = contractService.getContractById(dto.getId_contract());
         e.setContract(contract);
-        e.setUser(userCrud.findById(dto.getId_assigned())
-                .orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, "Usuario asignado no encontrado")));
+        e.setUser(null);
         e.setOld_plate(contract.getLicense_plate());
         e.setNew_plate(dto.getNew_plate());
         e.setEvidence_url(dto.getEvidence_url());
@@ -111,7 +110,7 @@ public class LicensePlateBlockRequestService {
     }
 
 
-    public ResponseSuccessfullyDto changeStatus(Integer idLicensePlateBlockRequest, Integer status) {
+    public ResponseSuccessfullyDto changeStatus(Integer idBackOffice, Integer idLicensePlateBlockRequest, Integer status) {
         LicensePlateBlockRequest existing = getLicensePlateBlockRequestById(idLicensePlateBlockRequest);
         String message = "";
         switch (status){
@@ -139,8 +138,9 @@ public class LicensePlateBlockRequestService {
                 throw new BusinessException(HttpStatus.BAD_REQUEST,
                         "No existe el estado ingresado.");
         }
+        existing.setUser(userCrud.findById(idBackOffice).get());
         existing.setStatus(status);
-
+        licensePlateBlockRequestCrud.save(existing);
         return ResponseSuccessfullyDto.builder()
                 .code(HttpStatus.OK)
                 .message(message)
