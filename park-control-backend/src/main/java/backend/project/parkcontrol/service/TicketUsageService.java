@@ -33,15 +33,16 @@ public class TicketUsageService {
     private static final Integer ID_MAIN_BRANCH = 1;
     private static final Integer PAID_BY_PLAN = 3;
     private static final Integer PAID_BY_BUSSINES = 4;
+
     // ==============================
     // GETTERS
     // ==============================
-    public List<TicketUsage> getById_ticket(Integer id){
+    public List<TicketUsage> getById_ticket(Integer id) {
         List<TicketUsage> list = ticketusageCrud.findById_ticket(id);
         return list;
     }
 
-    public ResponseSuccessfullyDto getById_ticketResponse(Integer id){
+    public ResponseSuccessfullyDto getById_ticketResponse(Integer id) {
         return ResponseSuccessfullyDto.builder()
                 .code(HttpStatus.FOUND)
                 .message("Registros encontrados con éxito")
@@ -49,12 +50,12 @@ public class TicketUsageService {
                 .build();
     }
 
-    public List<TicketUsage> getAllTicketUsageList(){
+    public List<TicketUsage> getAllTicketUsageList() {
         List<TicketUsage> list = ticketusageCrud.findAll();
         return list;
     }
 
-    public ResponseSuccessfullyDto getAllTicketUsageListResponse(){
+    public ResponseSuccessfullyDto getAllTicketUsageListResponse() {
         return ResponseSuccessfullyDto.builder()
                 .code(HttpStatus.FOUND)
                 .message("Registros encontrados con éxito")
@@ -66,7 +67,7 @@ public class TicketUsageService {
         return ticketusageCrud.findById(id).orElse(new TicketUsage());
     }
 
-    public ResponseSuccessfullyDto getTicketUsageByIdResponse(Integer id){
+    public ResponseSuccessfullyDto getTicketUsageByIdResponse(Integer id) {
         return ResponseSuccessfullyDto.builder()
                 .code(HttpStatus.FOUND)
                 .message("Registro encontrado con éxito")
@@ -77,7 +78,7 @@ public class TicketUsageService {
     // ==============================
     // CRUD
     // ==============================
-    public ResponseSuccessfullyDto createTicketUsage(NewTicketUsageDto dto){
+    public ResponseSuccessfullyDto createTicketUsage(NewTicketUsageDto dto) {
         TicketUsage e = new TicketUsage();
         //e.setTicket(ticketService.getTicketById(dto.getId_ticket()));
         e.setGranted_hours(dto.getGranted_hours());
@@ -95,7 +96,7 @@ public class TicketUsageService {
                 .build();
     }
 
-    public ResponseSuccessfullyDto updateTicketUsage(TicketUsageDto dto){
+    public ResponseSuccessfullyDto updateTicketUsage(TicketUsageDto dto) {
         TicketUsage existing = getTicketUsageById(dto.getId());
         //existing.setTicket(ticketService.getTicketById(dto.getId_ticket()));
         existing.setGranted_hours(dto.getGranted_hours());
@@ -113,7 +114,7 @@ public class TicketUsageService {
                 .build();
     }
 
-    public ResponseSuccessfullyDto deleteTicketUsage(Integer id){
+    public ResponseSuccessfullyDto deleteTicketUsage(Integer id) {
         TicketUsage entity = getTicketUsageById(id);
         ticketusageCrud.delete(entity);
 
@@ -123,13 +124,13 @@ public class TicketUsageService {
                 .build();
     }
 
-    public void updateRateAssignament(Ticket ticket){
+    public void updateRateAssignament(Ticket ticket) {
         TicketUsage existing = getById_ticket(ticket.getId()).getFirst();
         List<RateAssignment> rateAssignment = rateAssignmentService.getRateAssignamentById_branchIsActive(ticket.getBranch().getId());
         Double rate;
-        if (!rateAssignment.isEmpty()){
+        if (!rateAssignment.isEmpty()) {
             rate = rateAssignment.getFirst().getHourly_rate();
-        }else{
+        } else {
             rate = rateAssignmentService.getRateAssignamentById_branchIsActive(ID_MAIN_BRANCH).getFirst().getHourly_rate();
         }
         existing.setHourly_rate(rate);
@@ -139,52 +140,55 @@ public class TicketUsageService {
     }
 
     public void calculatePayment(Ticket ticket) {
-       TicketUsage existing = getById_ticket(ticket.getId()).getFirst();
-       //VERIFICAMOS SI TIENE CONTRATO ACTIVO
-       List<Contract> contract = contractService.getByLicense_plateIsActive(ticket.getPlate());
-       boolean isContract = !contract.isEmpty();
-       //DEFINIMOS EL PLAN HOURS Y EL CONTRATO HISTORY
+        TicketUsage existing = getById_ticket(ticket.getId()).getFirst();
+        //VERIFICAMOS SI TIENE CONTRATO ACTIVO
+        List<Contract> contract = contractService.getByLicense_plateIsActive(ticket.getPlate());
+        boolean isContract = !contract.isEmpty();
+        //DEFINIMOS EL PLAN HOURS Y EL CONTRATO HISTORY
         int planHours = 0;
         ContractHistory contractHistory1 = null;
-       if(isContract){//CLIENTE CON SUB
-         Contract contract1 = contract.getFirst();
-           java.sql.Date entryDateSql = java.sql.Date.valueOf(ticket.getEntry_date().toLocalDate());
-           List<ContractHistory> contractHistory = contractHistoryService.findByContractAndDate(contract1.getId(), entryDateSql);
-        if (!contractHistory.isEmpty()){
-            contractHistory1 = contractHistory.getFirst();
-            planHours = contractHistory1.getIncluded_hours()-contractHistory1.getConsumed_hours();
-        }else{
-                   log.info("Su plan no cubre el día "+ticket.getEntry_date().getDayOfWeek().toString());
+        if (isContract) {//CLIENTE CON SUB
+            Contract contract1 = contract.getFirst();
+            java.sql.Date entryDateSql = java.sql.Date.valueOf(ticket.getEntry_date().toLocalDate());
+            List<ContractHistory> contractHistory = contractHistoryService.findByContractAndDate(contract1.getId(), entryDateSql);
+            if (!contractHistory.isEmpty()) {
+                contractHistory1 = contractHistory.getFirst();
+                planHours = contractHistory1.getIncluded_hours() - contractHistory1.getConsumed_hours();
+            } else {
+                log.info("Su plan no cubre el día " + ticket.getEntry_date().getDayOfWeek().toString());
+            }
+        }//CLIENTE GENERAL
+        Integer parkHours = calculateHours(ticket.getEntry_date(), ticket.getExit_date());
+        existing.setConsumed_hours(parkHours);
+        existing.setTotal_hours(parkHours);
+        if (existing.getGranted_hours() > 0) {
+            createTicketPayment(ticket, 0.0, PAID_BY_BUSSINES);
         }
-       }//CLIENTE GENERAL
-            Integer parkHours = calculateHours(ticket.getEntry_date(), ticket.getExit_date());
-            existing.setConsumed_hours(parkHours);
-            existing.setTotal_hours(parkHours);
-            int hoursExceed = parkHours - existing.getGranted_hours();
-           if (hoursExceed > 0) {
-               if (planHours!=0){
-                   hoursExceed = hoursExceed - planHours;
-                   if (hoursExceed <= 0){
-                       existing.setExceeded_hours(0);
-                       contractHistory1.setConsumed_hours(contractHistory1.getIncluded_hours() - (hoursExceed*(-1)));
-                       createTicketPayment(ticket, 0.0, PAID_BY_PLAN);
-                       ticket.setStatus(TicketStatus.TICKET_PAGADO.getValue());
-                   }else{
-                       existing.setExceeded_hours(hoursExceed);
-                       contractHistory1.setConsumed_hours(contractHistory1.getIncluded_hours());
-                   }
-                   existing.setConsumed_plan_hours(contractHistory1.getIncluded_hours() - contractHistory1.getConsumed_hours());
-               }else{
-                   existing.setExceeded_hours(hoursExceed);
-               }
-           }else{
-               existing.setExceeded_hours(0);
-               createTicketPayment(ticket, 0.0, PAID_BY_BUSSINES);
-               ticket.setStatus(TicketStatus.TICKET_PAGADO.getValue());
-           }
-       existing.setCustomer_amount(existing.getExceeded_hours()*existing.getHourly_rate());
-       ticketusageCrud.save(existing);
-       ticketCrud.save(ticket);
+        int hoursExceed = parkHours - existing.getGranted_hours();//HORAS RESTANTES = HORAS PARQUEADO - HORAS OTORGADAS POR COMERCIOS
+        if (hoursExceed > 0) {//SI EXISTEN HORAS POR PAGAR
+            if (planHours != 0) {//SI HAY PLAN Y TIENE HORAS DISPONIBLES
+                hoursExceed = hoursExceed - planHours;//HORAS RESTANTES = HORAS RESTANTES - HORAS DISPONIBLES DEL PLAN
+                if (hoursExceed <= 0) {//SI NO EXISTEN HORAS POR PAGAR CON PLAN
+                    existing.setExceeded_hours(0);
+                    contractHistory1.setConsumed_hours(contractHistory1.getIncluded_hours() - (hoursExceed * (-1)));
+                    ticket.setStatus(TicketStatus.TICKET_PAGADO.getValue());
+                } else {//SI EXISTEN HORAS POR PAGAR CON PLAN
+                    existing.setExceeded_hours(hoursExceed);
+                    contractHistory1.setConsumed_hours(contractHistory1.getIncluded_hours());
+
+                }
+                createTicketPayment(ticket, 0.0, PAID_BY_PLAN);
+                existing.setConsumed_plan_hours(contractHistory1.getIncluded_hours() - contractHistory1.getConsumed_hours());
+            } else {
+                existing.setExceeded_hours(hoursExceed);
+            }
+        } else {//SI NO EXISTEN HORAS POR PAGAR
+            existing.setExceeded_hours(0);
+            ticket.setStatus(TicketStatus.TICKET_PAGADO.getValue());
+        }
+        existing.setCustomer_amount(existing.getExceeded_hours() * existing.getHourly_rate());
+        ticketusageCrud.save(existing);
+        ticketCrud.save(ticket);
     }
 
     public int calculateHours(LocalDateTime inicio, LocalDateTime fin) {
@@ -203,7 +207,7 @@ public class TicketUsageService {
         return (int) Math.max(horas, 1);
     }
 
-    public void createTicketPayment(Ticket ticket, Double monto, int paymentMethod){
+    public void createTicketPayment(Ticket ticket, Double monto, int paymentMethod) {
         TicketPayment e = new TicketPayment();
         e.setTicket(ticket);
         e.setTotal_amount(monto);
