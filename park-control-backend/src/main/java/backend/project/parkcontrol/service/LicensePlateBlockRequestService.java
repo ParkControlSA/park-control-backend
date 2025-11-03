@@ -152,15 +152,9 @@ public class LicensePlateBlockRequestService {
         LicensePlateBlockRequest existing = getLicensePlateBlockRequestById(dto.getId());
         existing.setIs_4r(dto.getIs_4r());
         existing.setContract(contractService.getContractById(dto.getId_contract()));
-        existing.setUser(userCrud.findById(dto.getId_assigned())
-                .orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, "Usuario asignado no encontrado")));
-        existing.setOld_plate(dto.getOld_plate());
         existing.setNew_plate(dto.getNew_plate());
         existing.setEvidence_url(dto.getEvidence_url());
         existing.setNote(dto.getNote());
-        existing.setCreation_date(dto.getCreation_date());
-        existing.setStatus(dto.getStatus());
-
         licensePlateBlockRequestCrud.save(existing);
 
         return ResponseSuccessfullyDto.builder()
