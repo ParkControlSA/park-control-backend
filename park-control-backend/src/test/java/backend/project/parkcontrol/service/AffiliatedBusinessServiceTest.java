@@ -100,6 +100,7 @@ class AffiliatedBusinessServiceTest {
 
         assertThat(resp.getCode()).isEqualTo(HttpStatus.OK);
         assertThat(resp.getMessage()).isEqualTo("Registro eliminado con Éxito");
+        verify(affiliatedBusinessCrud).findById(id);
         verify(affiliatedBusinessCrud).delete(entity);
     }
 
@@ -157,7 +158,9 @@ class AffiliatedBusinessServiceTest {
 
         assertThat(resp.getCode()).isEqualTo(HttpStatus.OK);
         assertThat(resp.getMessage()).isEqualTo("Registro actualizado con Éxito");
+        verify(affiliatedBusinessCrud).findById(dto.getId());
         verify(validationService).validatePositiveNumber(dto.getGranted_hours(), "Horas Otorgadas");
+        verify(userCrud).findById(dto.getId_user());
         verify(affiliatedBusinessCrud).save(any(AffiliatedBusiness.class));
     }
 
@@ -198,13 +201,13 @@ class AffiliatedBusinessServiceTest {
         when(affiliatedBusinessCrud.findAll()).thenReturn(list);
         ResponseSuccessfullyDto all = service.getAllAffiliatedBusinessListResponse();
         assertThat(all.getCode()).isEqualTo(HttpStatus.FOUND);
-        assertThat(all.getMessage()).isEqualTo("Registro encontrado con Éxito");
+        assertThat(all.getMessage()).isEqualTo("Registros encontrados con Éxito");
         assertThat(all.getBody()).isEqualTo(list);
 
         when(affiliatedBusinessCrud.findById_user(id)).thenReturn(list);
         ResponseSuccessfullyDto byUser = service.getById_userResponse(id);
         assertThat(byUser.getCode()).isEqualTo(HttpStatus.FOUND);
-        assertThat(byUser.getMessage()).isEqualTo("Registro encontrado con Éxito");
+        assertThat(byUser.getMessage()).isEqualTo("Registros encontrados con Éxito");
         assertThat(byUser.getBody()).isEqualTo(list);
     }
 }
