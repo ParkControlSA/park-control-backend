@@ -1,57 +1,77 @@
 package backend.project.parkcontrol.service;
 
+
 import backend.project.parkcontrol.dto.request.ValidateCodeDto;
 import backend.project.parkcontrol.dto.response.ResponseSuccessfullyDto;
 import backend.project.parkcontrol.dto.response.UserInfoDto;
 import backend.project.parkcontrol.exception.BusinessException;
-import backend.project.parkcontrol.repository.entities.UserEntity;
+import backend.project.parkcontrol.repository.crud.ValidationCodeCrud;
 import backend.project.parkcontrol.repository.entities.ValidationCode;
+import backend.project.parkcontrol.utils.GeneralUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
+import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
 @Service
 public class ValidationCodeService {
 
-    private final RedisTemplate<String, Object> redisTemplate;
+    private final ValidationCodeCrud validationCodeCrud;
 
-    private static final Duration CODE_TTL = Duration.ofMinutes(5);
+    private final GeneralUtils generalUtils;
 
-    public void createValidationCode(ValidationCode validationCode) {
-        String key = "validationCode:" + validationCode.getUser().getId();
-        redisTemplate.opsForValue().set(key, validationCode, CODE_TTL);
-        log.info("Código de validación guardado en Redis para usuario {}", validationCode.getUser().getId());
-    }
 
-    public ResponseSuccessfullyDto getValidationCodeByUser(ValidateCodeDto validateCodeDto) {
-        String key = "validationCode:" + validateCodeDto.getUserId();
-        ValidationCode validationCode = (ValidationCode) redisTemplate.opsForValue().get(key);
+    public void createValidationCode(ValidationCode validationCode){
 
-        if (validationCode == null) {
-            throw new BusinessException(HttpStatus.NOT_FOUND, "El usuario no cuenta con un código de validación o ha expirado");
+        Optional<ValidationCode> optionalValidationCode = validationCodeCrud.getByUser(validationCode.getUser().getId());
+
+        if(optionalValidationCode.isEmpty()){
+            ValidationCode newValidationCode = new ValidationCode();
+            newValidationCode.setCode(validationCode.getCode());
+            newValidationCode.setUser(validationCode.getUser());
+            newValidationCode.setAttempts(0);
+            newValidationCode.setIsUsed(Boolean.FALSE);
+            newValidationCode.setExpirationTime(validationCode.getExpirationTime());
+            validationCodeCrud.save(newValidationCode);
+
+        }else{
+            ValidationCode actualValidationCode = optionalValidationCode.get();
+
+            actualValidationCode.setCode(validationCode.getCode());
+            actualValidationCode.setExpirationTime(validationCode.getExpirationTime());
+            actualValidationCode.setIsUsed(Boolean.FALSE);
+            actualValidationCode.setAttempts(0);
+
+            validationCodeCrud.save(actualValidationCode);
         }
 
-        if (!validateCodeDto.getCode().equals(validationCode.getCode())) {
+    }
+
+
+    public ResponseSuccessfullyDto getValidationCodeByUser(ValidateCodeDto validateCodeDto){
+
+        Optional<ValidationCode> optionalValidationCode = validationCodeCrud.getByUser(validateCodeDto.getUserId());
+
+        if(optionalValidationCode.isEmpty()){
+            throw new BusinessException(HttpStatus.NOT_FOUND,"El usuario no cuenta con un código de validación");
+        }
+
+        ValidationCode validationCode = optionalValidationCode.get();
+
+        if(!validateCodeDto.getCode().equals(validationCode.getCode())){
             throw new BusinessException(HttpStatus.UNAUTHORIZED, "El código no le pertenece al usuario que intenta iniciar sesión.");
         }
 
-        UserEntity user = validationCode.getUser();
-
         UserInfoDto userInfoDto = UserInfoDto.builder()
-                .userId(user.getId())
-                .username(user.getUsername())
-                .role(user.getRol().getRol())
-                .autentication(user.getAuthentication())
+                .userId(validationCode.getUser().getId())
+                .username(validationCode.getUser().getUsername())
+                .role(validationCode.getUser().getRol().getRol())
+                .autentication(validationCode.getUser().getAuthentication())
                 .build();
-
-        // Eliminar el código luego de usarlo (opcional)
-        redisTemplate.delete(key);
 
         return ResponseSuccessfullyDto.builder()
                 .code(HttpStatus.OK)
@@ -59,4 +79,5 @@ public class ValidationCodeService {
                 .body(userInfoDto)
                 .build();
     }
+
 }
