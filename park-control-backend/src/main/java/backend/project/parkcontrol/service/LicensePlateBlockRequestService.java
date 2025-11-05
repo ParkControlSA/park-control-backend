@@ -29,7 +29,7 @@ public class LicensePlateBlockRequestService {
     private final ContractService contractService;
     private final ContractCrud contractCrud;
     private final UserCrud userCrud;
-
+    private final EmailService emailService;
     // ==============================
     // GETTERS
     // ==============================
@@ -113,30 +113,33 @@ public class LicensePlateBlockRequestService {
     public ResponseSuccessfullyDto changeStatus(Integer idBackOffice, Integer idLicensePlateBlockRequest, Integer status) {
         LicensePlateBlockRequest existing = getLicensePlateBlockRequestById(idLicensePlateBlockRequest);
         String message = "";
+        Contract contract = existing.getContract();
         switch (status){
             case 1:
                 throw new BusinessException(HttpStatus.BAD_REQUEST,
                         "No es posible regresar al estado pendiente.");
             case 2:
-                Contract contract = existing.getContract();
                 contract.setLicense_plate(existing.getNew_plate());
                 contract.setIs_4r(existing.getIs_4r());
                 contractCrud.save(contract);
                 message = "El Cambio de Placa se ha realizado correctamente.";
+                emailService.sendEmail(contract.getUser().getEmail(),"Cambio de Placa", message+ "\n Observaciones: "+existing.getNote());
                 break;
             case 3:
                 message = "El Cambio de Placa ha sido rechazado.";
+                emailService.sendEmail(contract.getUser().getEmail(),"Cambio de Placa", message + "\n Observaciones: "+existing.getNote());
                 break;
             case 4:
-                Contract contract1 = existing.getContract();
-                contract1.setLicense_plate(existing.getOld_plate());
-                contract1.setIs_4r(existing.getIs_4r());
-                contractCrud.save(contract1);
+                contract.setLicense_plate(existing.getOld_plate());
+                contract.setIs_4r(existing.getIs_4r());
+                contractCrud.save(contract);
                 message = "El Cambio de Placa ha sido revocado, se ha restaurado la placa original.";
+                emailService.sendEmail(contract.getUser().getEmail(),"Cambio de Placa", message+ "\n Observaciones: "+existing.getNote());
                 break;
             default:
                 throw new BusinessException(HttpStatus.BAD_REQUEST,
                         "No existe el estado ingresado.");
+
         }
         existing.setUser(userCrud.findById(idBackOffice).get());
         existing.setStatus(status);

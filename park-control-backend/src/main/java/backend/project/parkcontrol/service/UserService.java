@@ -202,6 +202,8 @@ public class UserService {
 
         UserEntity user = getUserById(userId);
         user.setAuthentication(status);
+
+        emailService.sendEmail(user.getEmail(),"Actualización de Estado de Autenticación en 2 Pasos","La Autenticación se encuentra: " + ((status) ? "Activado" : "Desactivado"));
         try{
             userCrud.save(user);
             return ResponseSuccessfullyDto.builder()
@@ -246,7 +248,7 @@ public class UserService {
         UserEntity user = userOptional.get();
         user.setPassword(passwordHashed);
         userCrud.save(user);
-
+        emailService.sendEmail(user.getEmail(),"Cambio de Contraseña","Se ha actualizado tu contraseña, si no has sido tú, por favor, responde a este correo.");
         return ResponseSuccessfullyDto.builder().code(HttpStatus.OK)
                 .message("La contraseña ha sido actualizada, inicie sesión nuevamente")
                 .build();
