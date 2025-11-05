@@ -22,11 +22,9 @@ import java.util.*;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.verify;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.anyInt;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -46,6 +44,9 @@ class UserServiceTest {
 
     @Mock
     private  ValidationCodeService validationCodeService;
+
+    @Mock
+    private  ValidationCodeRedisService validationCodeRedisService;
 
     @InjectMocks
     private UserService userService;
@@ -275,6 +276,7 @@ class UserServiceTest {
         
         when(userCrud.getUserByUsername(loginDto.getUsername())).thenReturn(Optional.of(user));
         when(utils.validatePassword(loginDto.getPassword(), user.getPassword())).thenReturn(true);
+        when(utils.generateVerificationCode()).thenReturn("123456");
 
         // Act
         ResponseSuccessfullyDto result = userService.login(loginDto);
@@ -284,9 +286,9 @@ class UserServiceTest {
         assertThat(result.getMessage()).isEqualTo("Se ha enviado un código a su correo electrónico, ingresarlo para confirmar el inicio de swsión");
         assertThat(result.getBody()).isInstanceOf(UserInfoDto.class);
         
-        // Verify that sendCodeToUser was called
+        // Verify that sendCodeToUser was called (email and redis save)
         verify(emailService).sendEmail(anyString(), anyString(), anyString());
-        verify(validationCodeService).createValidationCode(any());
+        verify(validationCodeRedisService).saveCode(anyInt(), anyString(), anyLong());
     }
 
     @Test
@@ -328,10 +330,8 @@ class UserServiceTest {
         // Arrange
         UserEntity user = GENERATOR.nextObject(UserEntity.class);
         String verificationCode = "123456";
-        Date expirationDate = new Date();
         
         when(utils.generateVerificationCode()).thenReturn(verificationCode);
-        when(utils.createExpirationDate(2)).thenReturn(expirationDate);
 
         // Act
         userService.sendCodeToUser(user);
@@ -339,23 +339,28 @@ class UserServiceTest {
         // Assert
         verify(utils).generateVerificationCode();
         verify(emailService).sendEmail(user.getEmail(), "Código de Verificación", "El codigo es: " + verificationCode);
-        verify(validationCodeService).createValidationCode(any());
+        verify(validationCodeRedisService).saveCode(anyInt(), anyString(), anyLong());
     }
 
     @Test
     void validateCode() {
         // Arrange
-        ValidateCodeDto validateCodeDto = GENERATOR.nextObject(ValidateCodeDto.class);
-        ResponseSuccessfullyDto expectedResponse = GENERATOR.nextObject(ResponseSuccessfullyDto.class);
+        ValidateCodeDto validateCodeDto = new ValidateCodeDto();
+        validateCodeDto.setUserId(1);
+        validateCodeDto.setCode("123456");
         
-        when(validationCodeService.getValidationCodeByUser(validateCodeDto)).thenReturn(expectedResponse);
+        when(validationCodeRedisService.validateAndDelete(1, "123456")).thenReturn(true);
 
         // Act
         ResponseSuccessfullyDto result = userService.validateCode(validateCodeDto);
 
         // Assert
-        assertThat(result).isEqualTo(expectedResponse);
-        verify(validationCodeService).getValidationCodeByUser(validateCodeDto);
+        assertThat(result.getCode()).isEqualTo(HttpStatus.OK);
+        assertThat(result.getMessage()).isEqualTo("Código validado correctamente");
+        Map body = (Map) result.getBody();
+        assertThat(body.get("userId")).isEqualTo(1);
+        assertThat(body.get("message")).isEqualTo("Código validado correctamente. Autenticación completada.");
+        verify(validationCodeRedisService).validateAndDelete(1, "123456");
     }
 
     @Test

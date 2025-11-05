@@ -1,13 +1,13 @@
 package backend.project.parkcontrol.dto.request;
 
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
-@Builder
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class ValidateCodeDto {
 
     private String code;
