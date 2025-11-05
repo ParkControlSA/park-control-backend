@@ -1,12 +1,12 @@
 package backend.project.parkcontrol.dto.request;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class NewSubscriptionPlanDto {
     private String name;
     private Integer month_hours;
