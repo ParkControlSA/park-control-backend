@@ -1,14 +1,14 @@
 package backend.project.parkcontrol.dto.response;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class IncidentDto {
     private Integer id;
     private Integer id_ticket;

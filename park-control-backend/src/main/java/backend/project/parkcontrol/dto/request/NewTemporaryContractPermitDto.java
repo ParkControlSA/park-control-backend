@@ -1,14 +1,14 @@
 package backend.project.parkcontrol.dto.request;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class NewTemporaryContractPermitDto {
     private Integer id_contract;
     private String temporary_plate;
