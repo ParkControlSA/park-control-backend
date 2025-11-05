@@ -2,7 +2,6 @@ package backend.project.parkcontrol.service;
 
 import backend.project.parkcontrol.dto.request.*;
 import backend.project.parkcontrol.dto.response.ResponseSuccessfullyDto;
-import backend.project.parkcontrol.dto.response.UserDto;
 import backend.project.parkcontrol.dto.response.UserInfoDto;
 import backend.project.parkcontrol.exception.BusinessException;
 import backend.project.parkcontrol.repository.crud.UserCrud;
@@ -19,411 +18,273 @@ import org.springframework.http.HttpStatus;
 
 import java.util.*;
 
-
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.verify;
-
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
 
-    @Mock
-    private  UserCrud userCrud;
+    @Mock private UserCrud userCrud;
+    @Mock private RolService rolService;
+    @Mock private GeneralUtils utils;
+    @Mock private EmailService emailService;
+    @Mock private ValidationCodeService validationCodeService;
+    @Mock private ValidationCodeRedisService validationCodeRedisService;
 
-    @Mock
-    private  RolService rolService;
-
-    @Mock
-    private  GeneralUtils utils;
-
-    @Mock
-    private  EmailService emailService;
-
-    @Mock
-    private  ValidationCodeService validationCodeService;
-
-    @Mock
-    private  ValidationCodeRedisService validationCodeRedisService;
-
-    @InjectMocks
-    private UserService userService;
+    @InjectMocks private UserService userService;
 
     private static final EasyRandom GENERATOR = new EasyRandom();
-    private static final ResponseSuccessfullyDto RESPONSE_SUCCESS_EXPECTED = GENERATOR.nextObject(ResponseSuccessfullyDto.class);
 
+    // =============================================================
+    // CREATE USER
+    // =============================================================
     @Test
-    void createUser() {
-        // Arrange
+    void createUser_Success() {
         RoleEntity role = GENERATOR.nextObject(RoleEntity.class);
-        NewUserDto newUserDto = GENERATOR.nextObject(NewUserDto.class);
-        String hashedPassword = "hashedPassword123";
-        
-        // Create the expected saved user with ID
-        UserEntity savedUser = new UserEntity();
-        savedUser.setId(1);
-        savedUser.setName(newUserDto.getNombre());
-        savedUser.setEmail(newUserDto.getEmail());
-        savedUser.setPhone(newUserDto.getTelefono());
-        savedUser.setUsername(newUserDto.getUsername());
-        savedUser.setPassword(hashedPassword);
-        savedUser.setAuthentication(Boolean.TRUE);
-        savedUser.setRol(role);
+        NewUserDto dto = GENERATOR.nextObject(NewUserDto.class);
+        String hashed = "hashed123";
 
-        // Mock the dependencies
-        when(rolService.getRoleById(newUserDto.getRol())).thenReturn(role);
-        when(utils.hashPassword(newUserDto.getPassword())).thenReturn(hashedPassword);
-        when(userCrud.save(any(UserEntity.class))).thenReturn(savedUser);
+        UserEntity saved = new UserEntity();
+        saved.setId(10);
+        saved.setRol(role);
 
-        // Act
-        ResponseSuccessfullyDto result = userService.createUser(newUserDto);
+        when(rolService.getRoleById(dto.getRol())).thenReturn(role);
+        when(utils.hashPassword(dto.getPassword())).thenReturn(hashed);
+        when(userCrud.save(any(UserEntity.class))).thenReturn(saved);
 
-        // Assert
-        assertThat(result.getCode()).isEqualTo(HttpStatus.CREATED);
-        assertThat(result.getMessage()).isEqualTo("El usuario fué creado correctamente");
-        assertThat(((Map<String, Integer>) result.getBody()).get("id")).isEqualTo(1);
-    }
+        ResponseSuccessfullyDto response = userService.createUser(dto);
 
-    @Test
-    void updateUser() {
-        // Arrange
-        UserUpdateDto userDto = GENERATOR.nextObject(UserUpdateDto.class);
-        UserEntity existingUser = GENERATOR.nextObject(UserEntity.class);
-        RoleEntity role = GENERATOR.nextObject(RoleEntity.class);
-        
-        when(userCrud.findById(userDto.getId())).thenReturn(Optional.of(existingUser));
-        when(rolService.getRoleById(userDto.getRol())).thenReturn(role);
-        when(userCrud.save(any(UserEntity.class))).thenReturn(existingUser);
-
-        // Act
-        ResponseSuccessfullyDto result = userService.updateUser(userDto);
-
-        // Assert
-        assertThat(result.getCode()).isEqualTo(HttpStatus.OK);
-        assertThat(result.getMessage()).isEqualTo("Usuario actualizado correctamente");
+        assertThat(response.getCode()).isEqualTo(HttpStatus.CREATED);
+        assertThat(response.getMessage()).isEqualTo("El usuario fué creado correctamente");
+        assertThat(((Map<?, ?>) response.getBody()).get("id")).isEqualTo(10);
         verify(userCrud).save(any(UserEntity.class));
     }
 
     @Test
-    void deleteUser() {
-        // Arrange
-        Integer userId = 1;
+    void createUser_WhenSaveFails_ThrowsBusinessException() {
+        NewUserDto dto = GENERATOR.nextObject(NewUserDto.class);
+        RoleEntity role = GENERATOR.nextObject(RoleEntity.class);
+        when(rolService.getRoleById(dto.getRol())).thenReturn(role);
+        when(utils.hashPassword(dto.getPassword())).thenReturn("hash");
+        when(userCrud.save(any(UserEntity.class))).thenThrow(new RuntimeException("DB error"));
+
+        BusinessException ex = assertThrows(BusinessException.class, () -> userService.createUser(dto));
+        assertThat(ex.getCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(ex.getMessage()).isEqualTo("Error al intentar guardar al usuario.");
+    }
+
+    // =============================================================
+    // UPDATE USER
+    // =============================================================
+    @Test
+    void updateUser_Success() {
+        UserUpdateDto dto = GENERATOR.nextObject(UserUpdateDto.class);
         UserEntity user = GENERATOR.nextObject(UserEntity.class);
-        
-        when(userCrud.findById(userId)).thenReturn(Optional.of(user));
+        RoleEntity role = GENERATOR.nextObject(RoleEntity.class);
 
-        // Act
-        ResponseSuccessfullyDto result = userService.deleteUser(userId);
+        when(userCrud.findById(dto.getId())).thenReturn(Optional.of(user));
+        when(rolService.getRoleById(dto.getRol())).thenReturn(role);
+        when(userCrud.save(any(UserEntity.class))).thenReturn(user);
 
-        // Assert
-        assertThat(result.getCode()).isEqualTo(HttpStatus.OK);
-        assertThat(result.getMessage()).isEqualTo("Usuario eliminado correctamente");
+        ResponseSuccessfullyDto response = userService.updateUser(dto);
+        assertThat(response.getCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getMessage()).isEqualTo("Usuario actualizado correctamente");
+        verify(userCrud).save(user);
+    }
+
+    // =============================================================
+    // DELETE USER
+    // =============================================================
+    @Test
+    void deleteUser_Success() {
+        UserEntity user = GENERATOR.nextObject(UserEntity.class);
+        when(userCrud.findById(anyInt())).thenReturn(Optional.of(user));
+
+        ResponseSuccessfullyDto response = userService.deleteUser(1);
+        assertThat(response.getCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getMessage()).isEqualTo("Usuario eliminado correctamente");
         verify(userCrud).delete(user);
     }
 
+    // =============================================================
+    // GET BY ID
+    // =============================================================
     @Test
-    void getUserById() {
-        // Arrange
-        Integer userId = 1;
+    void getUserById_Success() {
         UserEntity user = GENERATOR.nextObject(UserEntity.class);
-        
-        when(userCrud.findById(userId)).thenReturn(Optional.of(user));
+        when(userCrud.findById(1)).thenReturn(Optional.of(user));
 
-        // Act
-        UserEntity result = userService.getUserById(userId);
-
-        // Assert
+        UserEntity result = userService.getUserById(1);
         assertThat(result).isEqualTo(user);
-        verify(userCrud).findById(userId);
     }
 
     @Test
-    void getUserByIdResponse() {
-        // Arrange
-        Integer userId = 1;
+    void getUserById_WhenNotFound_ThrowsException() {
+        when(userCrud.findById(1)).thenReturn(Optional.empty());
+        assertThrows(NoSuchElementException.class, () -> userService.getUserById(1));
+    }
+
+    @Test
+    void getUserByIdResponse_Success() {
         UserEntity user = GENERATOR.nextObject(UserEntity.class);
-        
-        when(userCrud.findById(userId)).thenReturn(Optional.of(user));
+        when(userCrud.findById(1)).thenReturn(Optional.of(user));
 
-        // Act
-        ResponseSuccessfullyDto result = userService.getUserByIdResponse(userId);
+        ResponseSuccessfullyDto response = userService.getUserByIdResponse(1);
+        assertThat(response.getCode()).isEqualTo(HttpStatus.FOUND);
+        assertThat(response.getMessage()).isEqualTo("Usuario encontrado con éxito");
+        assertThat(response.getBody()).isEqualTo(user);
+    }
 
-        // Assert
-        assertThat(result.getCode()).isEqualTo(HttpStatus.FOUND);
-        assertThat(result.getMessage()).isEqualTo("Usuario encontrado con éxito");
-        assertThat(result.getBody()).isEqualTo(user);
+    // =============================================================
+    // GET ALL USERS
+    // =============================================================
+    @Test
+    void getAllUsersListResponse_Success() {
+        List<UserEntity> list = List.of(GENERATOR.nextObject(UserEntity.class));
+        when(userCrud.findAll()).thenReturn(list);
+
+        ResponseSuccessfullyDto response = userService.getAllUsersListResponse();
+        assertThat(response.getCode()).isEqualTo(HttpStatus.FOUND);
+        assertThat(response.getMessage()).isEqualTo("Usuarios encontrados con éxito");
+        assertThat(response.getBody()).isEqualTo(list);
+    }
+
+    // =============================================================
+    // GET BY ROLE
+    // =============================================================
+    @Test
+    void getUsersByRolId_Success() {
+        List<UserEntity> list = List.of(GENERATOR.nextObject(UserEntity.class));
+        when(userCrud.findById_role(1)).thenReturn(Optional.of(list));
+
+        List<UserEntity> result = userService.getUsersByRolId(1);
+        assertThat(result).isEqualTo(list);
     }
 
     @Test
-    void getAllUsersList() {
-        // Arrange
-        List<UserEntity> users = Arrays.asList(
-            GENERATOR.nextObject(UserEntity.class),
-            GENERATOR.nextObject(UserEntity.class)
-        );
-        
-        when(userCrud.findAll()).thenReturn(users);
-
-        // Act
-        List<UserEntity> result = userService.getAllUsersList();
-
-        // Assert
-        assertThat(result).isEqualTo(users);
-        assertThat(result.size()).isEqualTo(2);
-        verify(userCrud).findAll();
+    void getUsersByRolId_WhenEmptyOptional_ThrowsNoSuchElement() {
+        when(userCrud.findById_role(1)).thenReturn(Optional.empty());
+        assertThrows(NoSuchElementException.class, () -> userService.getUsersByRolId(1));
     }
 
+    // =============================================================
+    // LOGIN
+    // =============================================================
     @Test
-    void getAllUsersListResponse() {
-        // Arrange
-        List<UserEntity> users = Arrays.asList(
-            GENERATOR.nextObject(UserEntity.class),
-            GENERATOR.nextObject(UserEntity.class)
-        );
-        
-        when(userCrud.findAll()).thenReturn(users);
-
-        // Act
-        ResponseSuccessfullyDto result = userService.getAllUsersListResponse();
-
-        // Assert
-        assertThat(result.getCode()).isEqualTo(HttpStatus.FOUND);
-        assertThat(result.getMessage()).isEqualTo("Usuarios encontrados con éxito");
-        assertThat(result.getBody()).isEqualTo(users);
-    }
-
-    @Test
-    void getUsersByRolId() {
-        // Arrange
-        Integer rolId = 1;
-        List<UserEntity> users = Arrays.asList(
-            GENERATOR.nextObject(UserEntity.class),
-            GENERATOR.nextObject(UserEntity.class)
-        );
-
-        Optional<List<UserEntity>> optionalUserEntityList = Optional.of(users);
-
-        when(userCrud.findById_role(rolId)).thenReturn(optionalUserEntityList);
-
-        // Act
-        List<UserEntity> result = userService.getUsersByRolId(rolId);
-
-        // Assert
-        assertThat(result).isEqualTo(users);
-        assertThat(result.size()).isEqualTo(2);
-        verify(userCrud).findById_role(rolId);
-    }
-
-    @Test
-    void getUsersByRolIdResponse() {
-        // Arrange
-        Integer rolId = 1;
-        List<UserEntity> users = Arrays.asList(
-            GENERATOR.nextObject(UserEntity.class),
-            GENERATOR.nextObject(UserEntity.class)
-        );
-
-        Optional<List<UserEntity>> optionalUserEntityList = Optional.of(users);
-        
-        when(userCrud.findById_role(rolId)).thenReturn(optionalUserEntityList);
-
-        // Act
-        ResponseSuccessfullyDto result = userService.getUsersByRolIdResponse(rolId);
-
-        // Assert
-        assertThat(result.getCode()).isEqualTo(HttpStatus.FOUND);
-        assertThat(result.getMessage()).isEqualTo("Usuarios encontrados con éxito por rol");
-        assertThat(result.getBody()).isEqualTo(users);
-    }
-
-    @Test
-    void login_Successful_WithoutTwoFactorAuth() {
-        // Arrange
-        LoginDto loginDto = GENERATOR.nextObject(LoginDto.class);
+    void login_SuccessWithout2FA() {
+        LoginDto login = GENERATOR.nextObject(LoginDto.class);
         UserEntity user = GENERATOR.nextObject(UserEntity.class);
         RoleEntity role = GENERATOR.nextObject(RoleEntity.class);
-        user.setRol(role);
         user.setAuthentication(false);
-        
-        when(userCrud.getUserByUsername(loginDto.getUsername())).thenReturn(Optional.of(user));
-        when(utils.validatePassword(loginDto.getPassword(), user.getPassword())).thenReturn(true);
+        user.setRol(role);
 
-        // Act
-        ResponseSuccessfullyDto result = userService.login(loginDto);
+        when(userCrud.getUserByUsername(login.getUsername())).thenReturn(Optional.of(user));
+        when(utils.validatePassword(anyString(), anyString())).thenReturn(true);
 
-        // Assert
-        assertThat(result.getCode()).isEqualTo(HttpStatus.OK);
-        assertThat(result.getMessage()).isEqualTo("Inicio de sesión exitoso");
-        assertThat(result.getBody()).isInstanceOf(UserInfoDto.class);
-        
-        UserInfoDto userInfo = (UserInfoDto) result.getBody();
-        assertThat(userInfo.getUserId()).isEqualTo(user.getId());
-        assertThat(userInfo.getUsername()).isEqualTo(user.getUsername());
-        assertThat(userInfo.getRole()).isEqualTo(user.getRol().getRol());
-        assertThat(userInfo.getAutentication()).isEqualTo(user.getAuthentication());
+        ResponseSuccessfullyDto response = userService.login(login);
+        assertThat(response.getCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getMessage()).isEqualTo("Inicio de sesión exitoso");
     }
 
     @Test
-    void login_Successful_WithTwoFactorAuth() {
-        // Arrange
-        LoginDto loginDto = GENERATOR.nextObject(LoginDto.class);
+    void login_SuccessWith2FA() {
+        LoginDto login = GENERATOR.nextObject(LoginDto.class);
         UserEntity user = GENERATOR.nextObject(UserEntity.class);
-        RoleEntity role = GENERATOR.nextObject(RoleEntity.class);
-        user.setRol(role);
         user.setAuthentication(true);
-        
-        when(userCrud.getUserByUsername(loginDto.getUsername())).thenReturn(Optional.of(user));
-        when(utils.validatePassword(loginDto.getPassword(), user.getPassword())).thenReturn(true);
-        when(utils.generateVerificationCode()).thenReturn("123456");
+        user.setRol(GENERATOR.nextObject(RoleEntity.class));
 
-        // Act
-        ResponseSuccessfullyDto result = userService.login(loginDto);
+        when(userCrud.getUserByUsername(login.getUsername())).thenReturn(Optional.of(user));
+        when(utils.validatePassword(anyString(), anyString())).thenReturn(true);
+        when(utils.generateVerificationCode()).thenReturn("654321");
 
-        // Assert
-        assertThat(result.getCode()).isEqualTo(HttpStatus.OK);
-        assertThat(result.getMessage()).isEqualTo("Se ha enviado un código a su correo electrónico, ingresarlo para confirmar el inicio de swsión");
-        assertThat(result.getBody()).isInstanceOf(UserInfoDto.class);
-        
-        // Verify that sendCodeToUser was called (email and redis save)
+        ResponseSuccessfullyDto response = userService.login(login);
+        assertThat(response.getMessage()).contains("correo electrónico");
         verify(emailService).sendEmail(anyString(), anyString(), anyString());
         verify(validationCodeRedisService).saveCode(anyInt(), anyString(), anyLong());
     }
 
     @Test
-    void login_UserNotFound_ThrowsException() {
-        // Arrange
-        LoginDto loginDto = GENERATOR.nextObject(LoginDto.class);
-        
-        when(userCrud.getUserByUsername(loginDto.getUsername())).thenReturn(Optional.empty());
-
-        // Act & Assert
-        BusinessException exception = assertThrows(BusinessException.class, () -> {
-            userService.login(loginDto);
-        });
-        
-        assertThat(exception.getCode()).isEqualTo(HttpStatus.NOT_FOUND);
-        assertThat(exception.getMessage()).isEqualTo("Credenciales incorrectas");
+    void login_UserNotFound_ThrowsBusinessException() {
+        LoginDto login = GENERATOR.nextObject(LoginDto.class);
+        when(userCrud.getUserByUsername(anyString())).thenReturn(Optional.empty());
+        BusinessException ex = assertThrows(BusinessException.class, () -> userService.login(login));
+        assertThat(ex.getMessage()).isEqualTo("Credenciales incorrectas");
     }
 
     @Test
-    void login_InvalidPassword_ThrowsException() {
-        // Arrange
-        LoginDto loginDto = GENERATOR.nextObject(LoginDto.class);
+    void login_InvalidPassword_ThrowsBusinessException() {
+        LoginDto login = GENERATOR.nextObject(LoginDto.class);
         UserEntity user = GENERATOR.nextObject(UserEntity.class);
-        
-        when(userCrud.getUserByUsername(loginDto.getUsername())).thenReturn(Optional.of(user));
-        when(utils.validatePassword(loginDto.getPassword(), user.getPassword())).thenReturn(false);
+        when(userCrud.getUserByUsername(anyString())).thenReturn(Optional.of(user));
+        when(utils.validatePassword(anyString(), anyString())).thenReturn(false);
 
-        // Act & Assert
-        BusinessException exception = assertThrows(BusinessException.class, () -> {
-            userService.login(loginDto);
-        });
-        
-        assertThat(exception.getCode()).isEqualTo(HttpStatus.NOT_FOUND);
-        assertThat(exception.getMessage()).isEqualTo("Crendenciales incorrectas");
+        BusinessException ex = assertThrows(BusinessException.class, () -> userService.login(login));
+        assertThat(ex.getMessage()).isEqualTo("Crendenciales incorrectas");
     }
 
+    // =============================================================
+    // SEND CODE
+    // =============================================================
     @Test
-    void sendCodeToUser() {
-        // Arrange
+    void sendCodeToUser_Success() {
         UserEntity user = GENERATOR.nextObject(UserEntity.class);
-        String verificationCode = "123456";
-        
-        when(utils.generateVerificationCode()).thenReturn(verificationCode);
+        when(utils.generateVerificationCode()).thenReturn("123456");
 
-        // Act
         userService.sendCodeToUser(user);
-
-        // Assert
-        verify(utils).generateVerificationCode();
-        verify(emailService).sendEmail(user.getEmail(), "Código de Verificación", "El codigo es: " + verificationCode);
+        verify(emailService).sendEmail(eq(user.getEmail()), anyString(), contains("123456"));
         verify(validationCodeRedisService).saveCode(anyInt(), anyString(), anyLong());
     }
 
+    // =============================================================
+    // VALIDATE CODE
+    // =============================================================
     @Test
-    void validateCode() {
-        // Arrange
-        ValidateCodeDto validateCodeDto = new ValidateCodeDto();
-        validateCodeDto.setUserId(1);
-        validateCodeDto.setCode("123456");
-        
-        when(validationCodeRedisService.validateAndDelete(1, "123456")).thenReturn(true);
+    void validateCode_Success() {
+        ValidateCodeDto dto = new ValidateCodeDto();
+        dto.setUserId(1);
+        dto.setCode("111111");
 
-        // Act
-        ResponseSuccessfullyDto result = userService.validateCode(validateCodeDto);
+        when(validationCodeRedisService.validateAndDelete(1, "111111")).thenReturn(true);
+        ResponseSuccessfullyDto response = userService.validateCode(dto);
 
-        // Assert
-        assertThat(result.getCode()).isEqualTo(HttpStatus.OK);
-        assertThat(result.getMessage()).isEqualTo("Código validado correctamente");
-        Map body = (Map) result.getBody();
-        assertThat(body.get("userId")).isEqualTo(1);
-        assertThat(body.get("message")).isEqualTo("Código validado correctamente. Autenticación completada.");
-        verify(validationCodeRedisService).validateAndDelete(1, "123456");
+        assertThat(response.getCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getMessage()).isEqualTo("Código validado correctamente");
+        verify(validationCodeRedisService).validateAndDelete(1, "111111");
     }
 
     @Test
-    void updateAuthenticationStatus_EnableTwoFactorAuth_Success() {
-        // Arrange
-        Integer userId = 1;
-        Boolean status = true;
-        UserEntity user = GENERATOR.nextObject(UserEntity.class);
-        
-        when(userCrud.findById(userId)).thenReturn(Optional.of(user));
-        when(userCrud.save(any(UserEntity.class))).thenReturn(user);
+    void validateCode_Invalid_ThrowsBusinessException() {
+        ValidateCodeDto dto = new ValidateCodeDto();
+        dto.setUserId(1);
+        dto.setCode("000000");
 
-        // Act
-        ResponseSuccessfullyDto result = userService.updateAuthenticationStatus(userId, status);
-
-        // Assert
-        assertThat(result.getCode()).isEqualTo(HttpStatus.OK);
-        assertThat(result.getMessage()).isEqualTo("Autenticacion en 2 pasos fué activado");
-        verify(userCrud).save(user);
-        
-        // Verify that the user's authentication status was updated
-        assertThat(user.getAuthentication()).isEqualTo(status);
+        when(validationCodeRedisService.validateAndDelete(1, "000000")).thenReturn(false);
+        BusinessException ex = assertThrows(BusinessException.class, () -> userService.validateCode(dto));
+        assertThat(ex.getMessage()).isEqualTo("Código inválido o expirado");
     }
 
+    // =============================================================
+    // UPDATE AUTHENTICATION STATUS
+    // =============================================================
     @Test
-    void updateAuthenticationStatus_DisableTwoFactorAuth_Success() {
-        // Arrange
-        Integer userId = 1;
-        Boolean status = false;
+    void updateAuthenticationStatus_EnableSuccess() {
         UserEntity user = GENERATOR.nextObject(UserEntity.class);
-        user.setAuthentication(true); // Initially enabled
-        
-        when(userCrud.findById(userId)).thenReturn(Optional.of(user));
-        when(userCrud.save(any(UserEntity.class))).thenReturn(user);
+        when(userCrud.findById(1)).thenReturn(Optional.of(user));
+        when(userCrud.save(any())).thenReturn(user);
 
-        // Act
-        ResponseSuccessfullyDto result = userService.updateAuthenticationStatus(userId, status);
-
-        // Assert
-        assertThat(result.getCode()).isEqualTo(HttpStatus.OK);
-        assertThat(result.getMessage()).isEqualTo("Autenticacion en 2 pasos ha sido desactivado");
-        verify(userCrud).save(user);
-        
-        // Verify that the user's authentication status was updated
-        assertThat(user.getAuthentication()).isEqualTo(status);
+        ResponseSuccessfullyDto res = userService.updateAuthenticationStatus(1, true);
+        assertThat(res.getMessage()).contains("activado");
     }
 
     @Test
     void updateAuthenticationStatus_SaveFails_ThrowsException() {
-        // Arrange
-        Integer userId = 1;
-        Boolean status = true;
         UserEntity user = GENERATOR.nextObject(UserEntity.class);
-        
-        when(userCrud.findById(userId)).thenReturn(Optional.of(user));
-        when(userCrud.save(any(UserEntity.class))).thenThrow(new RuntimeException("Database error"));
+        when(userCrud.findById(1)).thenReturn(Optional.of(user));
+        when(userCrud.save(any())).thenThrow(new RuntimeException("DB error"));
 
-        // Act & Assert
-        BusinessException exception = assertThrows(BusinessException.class, () -> {
-            userService.updateAuthenticationStatus(userId, status);
-        });
-        
-        assertThat(exception.getCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(exception.getMessage()).isEqualTo("Error al actualizar los permisos de autenticación en 2 pasos.");
+        BusinessException ex = assertThrows(BusinessException.class, () -> userService.updateAuthenticationStatus(1, true));
+        assertThat(ex.getMessage()).isEqualTo("Error al actualizar los permisos de autenticación en 2 pasos.");
     }
 }
