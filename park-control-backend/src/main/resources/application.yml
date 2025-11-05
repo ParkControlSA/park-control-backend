@@ -7,6 +7,19 @@ spring:
     url: jdbc:mysql://shuttle.proxy.rlwy.net:49705/park_control?useSSL=true&allowPublicKeyRetrieval=true&serverTimezone=UTC
     username: root
     password: GvDlZUlNMInQYgvbdStIBVCWUETeHxMi
+
+
+  data:
+    redis:
+        # Host de Redis. Usa la variable de entorno REDIS_HOST o 'localhost' por defecto.
+      host: gondola.proxy.rlwy.net
+        # Puerto de Redis. Usa la variable de entorno REDIS_PORT o '6379' por defecto.
+      port: 27872
+        # Contraseña de Redis. Usa la variable de entorno REDIS_PASSWORD.
+      password: DXYrtJYXuaLhiYlYZUcZTpGXHQCqdjFH
+        # Timeout en milisegundos. Usa la variable de entorno REDIS_TIMEOUT o '6000' por defecto.
+      timeout: 6000
+
   mail:
     issue: C�digo de Verificaci�n
     message: Código para iniciar sesión

@@ -17,6 +17,7 @@ import backend.project.parkcontrol.repository.entities.ValidationCode;
 import backend.project.parkcontrol.utils.GeneralUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +27,7 @@ import java.util.Map;
 import java.util.Optional;
 
 
+@EnableCaching
 @Slf4j
 @RequiredArgsConstructor
 @Service
@@ -40,6 +42,10 @@ public class UserService {
     private final EmailService emailService;
 
     private final ValidationCodeService validationCodeService;
+
+    private final ValidationCodeRedisService validationCodeRedisService;
+
+    private final long TWO_FA_TTL_MINUTES = 5;
 
     public ResponseSuccessfullyDto createUser(NewUserDto newUserDto){
         UserEntity user = new UserEntity();
@@ -171,16 +177,25 @@ public class UserService {
     public void sendCodeToUser(UserEntity user){
         String code = utils.generateVerificationCode();
         emailService.sendEmail(user.getEmail(),"Código de Verificación","El codigo es: "+code);
-
-        ValidationCode validationCode = new ValidationCode();
-        validationCode.setUser(user);
-        validationCode.setCode(code);
-        validationCode.setExpirationTime(utils.createExpirationDate(2));
-        validationCodeService.createValidationCode(validationCode);
+        validationCodeRedisService.saveCode(user.getId(), code, TWO_FA_TTL_MINUTES);
     }
 
     public ResponseSuccessfullyDto validateCode(ValidateCodeDto validateCodeDto){
-        return validationCodeService.getValidationCodeByUser(validateCodeDto);
+        // validateCodeDto debe traer userId y code
+        Integer userId = validateCodeDto.getUserId();
+        String code = validateCodeDto.getCode();
+
+        boolean ok = validationCodeRedisService.validateAndDelete(userId, code);
+
+        if(!ok){
+            throw new BusinessException(HttpStatus.UNAUTHORIZED, "Código inválido o expirado");
+        }
+
+        Map<String, Object> body = new HashMap<>();
+        body.put("userId", userId);
+        body.put("message", "Código validado correctamente. Autenticación completada.");
+
+        return ResponseSuccessfullyDto.builder().code(HttpStatus.OK).message("Código validado correctamente").body(body).build();
     }
 
     public ResponseSuccessfullyDto updateAuthenticationStatus(Integer userId, Boolean status){
